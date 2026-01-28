@@ -174,6 +174,39 @@ claude
 - [context-cli README](context-cli/README.md)
 - [tickets-cli README](tickets-cli/README.md)
 
+## Comment ce projet a été créé
+
+Ce projet a été généré automatiquement à partir d'une vidéo Twitch de 6h grâce à un pipeline "Video-to-Code" :
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Vidéo Twitch   │────▶│ Extraction      │────▶│ Analyse frames  │
+│  (6h, no audio) │     │ frames (ffmpeg) │     │ (GPT-4 Vision)  │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                                                        │
+                                                        ▼
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Claude Code    │◀────│ BMAD Stories    │◀────│ Tutoriel MD     │
+│  Implementation │     │ (User Stories)  │     │ (documentation) │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+### Étapes
+
+1. **Téléchargement** : `yt-dlp` pour récupérer la vidéo Twitch
+2. **Extraction frames** : `ffmpeg -vf "fps=1/5"` → 4344 frames
+3. **Analyse vision** : Azure OpenAI GPT-4.1-mini analyse les frames
+4. **Génération tutoriel** : Documentation structurée en Markdown
+5. **BMAD Stories** : Conversion en User Stories avec le workflow BMAD
+6. **Implémentation** : Claude Code implémente chaque story
+
+### Résultat
+
+Une vidéo de 6h transformée en système fonctionnel avec :
+- 3 CLIs (claude-cli, context-cli, tickets-cli)
+- 8 skills Claude Code
+- Architecture multi-agents complète
+
 ## Crédits
 
 Basé sur le tutoriel Multi-Claude Bootstrap de [@claudecodeonly](https://www.twitch.tv/claudecodeonly).
