@@ -33,3 +33,6 @@ tutorial.md
 
 # Tickets storage (runtime)
 tickets-cli/tickets/
+
+# Generated settings
+settings.json

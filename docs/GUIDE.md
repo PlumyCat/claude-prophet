@@ -46,35 +46,35 @@ Un système permettant d'orchestrer **plusieurs instances Claude** travaillant e
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         HUMAN                                    │
-│                           │                                      │
-│                           ▼                                      │
+│                         HUMAN                                   │
+│                           │                                     │
+│                           ▼                                     │
 │  ┌─────────────────────────────────────────────────────────┐    │
-│  │                   PROPHET CLAUDE                         │    │
-│  │                   (Orchestrateur)                        │    │
-│  │                                                          │    │
+│  │                   PROPHET CLAUDE                        │    │
+│  │                   (Orchestrateur)                       │    │
+│  │                                                         │    │
 │  │  • Reçoit les demandes humaines                         │    │
 │  │  • Décompose en sous-tâches                             │    │
-│  │  • Délègue aux workers                                   │    │
-│  │  • Supervise et intègre                                  │    │
-│  │                                                          │    │
+│  │  • Délègue aux workers                                  │    │
+│  │  • Supervise et intègre                                 │    │
+│  │                                                         │    │
 │  │  Outils: claude-cli, context-cli, tickets-cli           │    │
 │  └─────────────────────────────────────────────────────────┘    │
-│                           │                                      │
+│                           │                                     │
 │            ┌──────────────┼──────────────┐                      │
 │            │              │              │                      │
 │            ▼              ▼              ▼                      │
-│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐            │
-│  │   WORKER 1   │ │   WORKER 2   │ │   WORKER N   │            │
-│  │   (tmux)     │ │   (tmux)     │ │   (tmux)     │            │
-│  │              │ │              │ │              │            │
-│  │ • Tâche      │ │ • Tâche      │ │ • Tâche      │            │
-│  │   spécifique │ │   spécifique │ │   spécifique │            │
-│  │ • Contexte   │ │ • Contexte   │ │ • Contexte   │            │
-│  │   isolé      │ │   isolé      │ │   isolé      │            │
-│  │ • Auto-exit  │ │ • Auto-exit  │ │ • Auto-exit  │            │
-│  └──────────────┘ └──────────────┘ └──────────────┘            │
-│                                                                  │
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐             │
+│  │   WORKER 1   │ │   WORKER 2   │ │   WORKER N   │             │
+│  │   (tmux)     │ │   (tmux)     │ │   (tmux)     │             │
+│  │              │ │              │ │              │             │
+│  │ • Tâche      │ │ • Tâche      │ │ • Tâche      │             │
+│  │   spécifique │ │   spécifique │ │   spécifique │             │
+│  │ • Contexte   │ │ • Contexte   │ │ • Contexte   │             │
+│  │   isolé      │ │   isolé      │ │   isolé      │             │
+│  │ • Auto-exit  │ │ • Auto-exit  │ │ • Auto-exit  │             │
+│  └──────────────┘ └──────────────┘ └──────────────┘             │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -109,7 +109,7 @@ bootstrap/
 
 ```
                     ┌─────────────┐
-                    │  context-cli │
+                    │ context-cli │
                     │             │
                     │ roles/      │
                     │ directives/ │
@@ -118,7 +118,7 @@ bootstrap/
                            │ génère contexte
                            ▼
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│ tickets-cli │◄────│  claude-cli  │────►│    tmux     │
+│ tickets-cli │◄────│ claude-cli  │────►│    tmux     │
 │             │     │             │     │             │
 │ • tracking  │     │ • spawn     │     │ • sessions  │
 │ • états     │     │ • capture   │     │ • isolation │
@@ -242,21 +242,21 @@ Dans Prophet Claude :
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│ tmux server                                          │
-│                                                      │
-│  ┌─────────────────────┐  ┌─────────────────────┐  │
-│  │ prophet-claude      │  │ claude-abc12345     │  │
-│  │ (attached)          │  │ (detached)          │  │
-│  │                     │  │                     │  │
-│  │ Human ◄──► Claude   │  │ Worker Claude       │  │
-│  │                     │  │ (autonome)          │  │
-│  └─────────────────────┘  └─────────────────────┘  │
-│                                                      │
-│  ┌─────────────────────┐  ┌─────────────────────┐  │
-│  │ claude-def67890     │  │ claude-ghi11111     │  │
-│  │ (detached)          │  │ (detached)          │  │
-│  └─────────────────────┘  └─────────────────────┘  │
-│                                                      │
+│ tmux server                                         │
+│                                                     │
+│  ┌─────────────────────┐  ┌─────────────────────┐   │
+│  │ prophet-claude      │  │ claude-abc12345     │   │
+│  │ (attached)          │  │ (detached)          │   │
+│  │                     │  │                     │   │
+│  │ Human ◄──► Claude   │  │ Worker Claude       │   │
+│  │                     │  │ (autonome)          │   │
+│  └─────────────────────┘  └─────────────────────┘   │
+│                                                     │
+│  ┌─────────────────────┐  ┌─────────────────────┐   │
+│  │ claude-def67890     │  │ claude-ghi11111     │   │
+│  │ (detached)          │  │ (detached)          │   │
+│  └─────────────────────┘  └─────────────────────┘   │
+│                                                     │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -294,17 +294,17 @@ directives/code-quality.yaml:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    TICKET LIFECYCLE                      │
-│                                                          │
-│   ┌──────┐    ┌─────────────┐    ┌─────────┐    ┌────┐ │
-│   │ OPEN │───►│ IN-PROGRESS │───►│ BLOCKED │───►│DONE│ │
-│   └──────┘    └─────────────┘    └─────────┘    └────┘ │
+│                    TICKET LIFECYCLE                     │
+│                                                         │
+│   ┌──────┐    ┌─────────────┐    ┌─────────┐    ┌────┐  │
+│   │ OPEN │───►│ IN-PROGRESS │───►│ BLOCKED │───►│DONE│  │
+│   └──────┘    └─────────────┘    └─────────┘    └────┘  │
 │       │              │                 │           ▲    │
 │       │              │                 │           │    │
 │       └──────────────┴─────────────────┴───────────┘    │
-│                                                          │
-│   create          assign            update         update│
-│                   (auto)                                 │
+│                                                         │
+│   create          assign            update       update │
+│                   (auto)                                │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -316,12 +316,12 @@ directives/code-quality.yaml:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                                                          │
+│                                                         │
 │  1. Human demande une tâche complexe                    │
-│     │                                                    │
-│     ▼                                                    │
+│     │                                                   │
+│     ▼                                                   │
 │  2. Prophet Claude analyse et décompose                 │
-│     │                                                    │
+│     │                                                   │
 │     ├─────────────────────────────────────────┐         │
 │     ▼                                         ▼         │
 │  3. ./claude spawn "Sous-tâche 1"    ./claude spawn "Sous-tâche 2"
@@ -333,12 +333,12 @@ directives/code-quality.yaml:
 │  5. ./claude capture worker1    ./claude capture worker2│
 │     │                                         │         │
 │     └─────────────────┬───────────────────────┘         │
-│                       ▼                                  │
+│                       ▼                                 │
 │  6. Prophet Claude intègre les résultats                │
-│     │                                                    │
-│     ▼                                                    │
+│     │                                                   │
+│     ▼                                                   │
 │  7. Human reçoit le livrable complet                    │
-│                                                          │
+│                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 

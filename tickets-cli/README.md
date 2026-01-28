@@ -15,7 +15,7 @@ uv sync
 Prophet Claude                          Worker Claude
       │                                       │
       ├─► tickets create "Auth JWT"           │
-      │   └─► Ticket #abc123 created          │
+      │   └─► Ticket #abc123 created        │
       │                                       │
       ├─► tickets assign abc123 auth-worker   │
       │                                       │
