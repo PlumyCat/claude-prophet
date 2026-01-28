@@ -88,7 +88,11 @@ def spawn(prompt: str, name: str | None, role: str | None, ticket: str | None):
         spawn --role worker "Fix the bug in auth.py"
         spawn --role worker --ticket abc123 "Implement feature"
     """
-    session = name or generate_session_name()
+    # Generate session name with claude- prefix
+    if name:
+        session = name if name.startswith("claude-") else f"claude-{name}"
+    else:
+        session = generate_session_name()
 
     # Check if session already exists
     if session_exists(session):
@@ -120,14 +124,16 @@ def spawn(prompt: str, name: str | None, role: str | None, ticket: str | None):
             )
 
     # Create tmux session with claude (skip permissions for autonomy)
-    result = run_tmux("new-session", "-d", "-s", session, "claude --dangerously-skip-permissions")
+    # Start in project root so ./tickets and other CLIs are accessible
+    project_root = str(Path(__file__).parent.parent)
+    result = run_tmux("new-session", "-d", "-s", session, "-c", project_root, "claude --dangerously-skip-permissions")
     if result.returncode != 0:
         click.echo(f"Error creating session: {result.stderr}", err=True)
         raise SystemExit(1)
 
-    # Wait for Claude to initialize
+    # Wait for Claude to initialize (needs time to load)
     click.echo(f"Starting Claude in session '{session}'...")
-    time.sleep(2)
+    time.sleep(5)
 
     # Send the prompt
     run_tmux("send-keys", "-t", session, full_prompt, "Enter")
@@ -187,7 +193,7 @@ def list_sessions():
             "-F",
             "#{session_name}: created #{session_created_string}",
             "-f",
-            f"#{{==:#{session_name},{session}}}",
+            f"#{{==:#{{session_name}},{session}}}",
         )
         if result.returncode == 0 and result.stdout.strip():
             click.echo(f"  - {result.stdout.strip()}")
