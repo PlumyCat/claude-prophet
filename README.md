@@ -178,6 +178,10 @@ claude
 
 Basé sur le tutoriel Multi-Claude Bootstrap de [@claudecodeonly](https://www.twitch.tv/claudecodeonly).
 
+Un grand merci pour cette vidéo Twitch de 6h qui présente un système d'orchestration multi-agents vraiment innovant. L'approche avec Prophet Claude, les workers tmux, et le système de tickets est élégante et puissante.
+
+Vidéo source : https://www.twitch.tv/claudecodeonly/video/2657952550
+
 ## Licence
 
 MIT
