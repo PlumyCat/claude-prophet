@@ -63,7 +63,7 @@ Un système permettant d'orchestrer **plusieurs instances Claude** travaillant e
 │                           │                                     │
 │            ┌──────────────┼──────────────┐                      │
 │            │              │              │                      │
-│            ▼              ▼              ▼                      │
+│            ▼              ▼              ▼                     │
 │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐             │
 │  │   WORKER 1   │ │   WORKER 2   │ │   WORKER N   │             │
 │  │   (tmux)     │ │   (tmux)     │ │   (tmux)     │             │
@@ -118,7 +118,7 @@ bootstrap/
                            │ génère contexte
                            ▼
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│ tickets-cli │◄────│ claude-cli  │────►│    tmux     │
+│ tickets-cli │◄────│ claude-cli │────►│    tmux     │
 │             │     │             │     │             │
 │ • tracking  │     │ • spawn     │     │ • sessions  │
 │ • états     │     │ • capture   │     │ • isolation │
@@ -248,7 +248,7 @@ Dans Prophet Claude :
 │  │ prophet-claude      │  │ claude-abc12345     │   │
 │  │ (attached)          │  │ (detached)          │   │
 │  │                     │  │                     │   │
-│  │ Human ◄──► Claude   │  │ Worker Claude       │   │
+│  │ Human ◄──► Claude  │  │ Worker Claude       │   │
 │  │                     │  │ (autonome)          │   │
 │  └─────────────────────┘  └─────────────────────┘   │
 │                                                     │
@@ -297,9 +297,9 @@ directives/code-quality.yaml:
 │                    TICKET LIFECYCLE                     │
 │                                                         │
 │   ┌──────┐    ┌─────────────┐    ┌─────────┐    ┌────┐  │
-│   │ OPEN │───►│ IN-PROGRESS │───►│ BLOCKED │───►│DONE│  │
+│   │ OPEN │───►│IN-PROGRESS │───►│ BLOCKED │───►│DONE│  │
 │   └──────┘    └─────────────┘    └─────────┘    └────┘  │
-│       │              │                 │           ▲    │
+│       │              │                 │           ▲   │
 │       │              │                 │           │    │
 │       └──────────────┴─────────────────┴───────────┘    │
 │                                                         │
@@ -326,10 +326,10 @@ directives/code-quality.yaml:
 │     ▼                                         ▼         │
 │  3. ./claude spawn "Sous-tâche 1"    ./claude spawn "Sous-tâche 2"
 │     │                                         │         │
-│     ▼                                         ▼         │
+│     ▼                                         ▼        │
 │  4. Worker 1 exécute                 Worker 2 exécute   │
 │     │                                         │         │
-│     ▼                                         ▼         │
+│     ▼                                         ▼        │
 │  5. ./claude capture worker1    ./claude capture worker2│
 │     │                                         │         │
 │     └─────────────────┬───────────────────────┘         │

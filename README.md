@@ -126,6 +126,34 @@ claude-prophet/
     └── stories/              # User stories
 ```
 
+## Skills Claude Code (MCBS)
+
+Skills globaux disponibles depuis n'importe quel projet (`~/.claude/skills/mcbs/`).
+
+| Skill | Description |
+|-------|-------------|
+| `/mcbs:prophet` | (Re)lancer Prophet Claude dans tmux |
+| `/mcbs:spawn` | Créer un worker avec options |
+| `/mcbs:workers` | Lister les workers actifs |
+| `/mcbs:capture` | Voir la sortie d'un worker |
+| `/mcbs:kill` | Tuer un/tous les workers |
+| `/mcbs:status` | Vue d'ensemble système |
+| `/mcbs:ticket` | Gestion des tickets |
+| `/mcbs:done` | Signaler fin de tâche (workers) |
+
+### Exemple d'utilisation
+
+```bash
+# Depuis n'importe quel terminal avec Claude Code
+claude
+
+# Dans Claude
+> /mcbs:status           # Voir l'état du système
+> /mcbs:spawn            # Créer un worker (interactif)
+> /mcbs:workers          # Lister les workers
+> /mcbs:capture worker-1 # Voir la sortie
+```
+
 ## Documentation
 
 - [Guide d'utilisation complet](docs/GUIDE.md)

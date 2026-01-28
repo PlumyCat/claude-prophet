@@ -77,7 +77,9 @@ def cli():
 @click.option("--name", "-n", default=None, help="Session name (auto-generated if not provided)")
 @click.option("--role", "-r", default=None, help="Role to apply from context-cli")
 @click.option("--ticket", "-t", default=None, help="Ticket ID to associate with this worker")
-def spawn(prompt: str, name: str | None, role: str | None, ticket: str | None):
+@click.option("--skill", "-s", multiple=True, help="Skill(s) to run after prompt (repeatable)")
+@click.option("--ralph", is_flag=True, help="Run with Ralph Loop for autonomous execution")
+def spawn(prompt: str, name: str | None, role: str | None, ticket: str | None, skill: tuple[str, ...], ralph: bool):
     """Spawn a Claude worker in a new tmux session.
 
     PROMPT is the task to give to the worker.
@@ -87,6 +89,9 @@ def spawn(prompt: str, name: str | None, role: str | None, ticket: str | None):
         spawn --name fib-worker "Implement fibonacci"
         spawn --role worker "Fix the bug in auth.py"
         spawn --role worker --ticket abc123 "Implement feature"
+        spawn --ralph "Long autonomous task"
+        spawn --ralph --role worker --ticket abc123 "Complex feature"
+        spawn --skill bmad:dev-story "Workflow-driven task"
     """
     # Generate session name with claude- prefix
     if name:
@@ -135,8 +140,28 @@ def spawn(prompt: str, name: str | None, role: str | None, ticket: str | None):
     click.echo(f"Starting Claude in session '{session}'...")
     time.sleep(5)
 
-    # Send the prompt
-    run_tmux("send-keys", "-t", session, full_prompt, "Enter")
+    # Send the prompt (or ralph-loop command if --ralph)
+    if ralph:
+        # Use Ralph Loop for autonomous execution
+        ralph_cmd = f"/ralph-loop:ralph-loop {prompt}"
+        click.echo("Ralph Loop mode enabled")
+        run_tmux("send-keys", "-t", session, ralph_cmd, "Enter")
+    else:
+        run_tmux("send-keys", "-t", session, full_prompt, "Enter")
+        # Send extra Enter to confirm paste (workaround for Claude Code paste behavior)
+        time.sleep(1)
+        run_tmux("send-keys", "-t", session, "Enter")
+
+    # Send skills if specified (after a delay for Claude to start processing)
+    if skill:
+        click.echo(f"Skills to activate: {', '.join(skill)}")
+        time.sleep(3)  # Wait for Claude to start processing
+        for s in skill:
+            # Normalize skill name (add / prefix if missing)
+            skill_cmd = s if s.startswith("/") else f"/{s}"
+            run_tmux("send-keys", "-t", session, skill_cmd, "Enter")
+            click.echo(f"  Sent skill: {skill_cmd}")
+            time.sleep(1)
 
     click.echo(f"Spawned worker: {session}")
     click.echo(f"Attach with: tmux attach -t {session}")
