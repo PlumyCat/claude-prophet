@@ -46,6 +46,7 @@ cd claude-prophet
 # Installer les dépendances de chaque CLI
 cd claude-cli && uv sync && cd ..
 cd context-cli && uv sync && cd ..
+cd tickets-cli && uv sync && cd ..
 ```
 
 ## Quick Start
@@ -93,17 +94,33 @@ Gestion des rôles et directives.
 ./context validate worker   # Valider un rôle
 ```
 
+### tickets-cli
+
+Tracking des tâches déléguées.
+
+```bash
+./tickets create "Task"      # Créer un ticket
+./tickets list               # Lister les tickets
+./tickets show abc123        # Voir un ticket
+./tickets assign abc123 worker # Assigner un worker
+./tickets update abc123 --status done # Marquer comme terminé
+./tickets stats              # Statistiques
+```
+
 ## Structure
 
 ```
 claude-prophet/
 ├── claude                    # Wrapper → claude-cli
 ├── context                   # Wrapper → context-cli
+├── tickets                   # Wrapper → tickets-cli
 ├── restart-prophet-claude.sh # Script de démarrage
 ├── claude-cli/               # CLI gestion workers
 ├── context-cli/              # CLI gestion contextes
 │   ├── roles/                # Définitions des rôles
 │   └── directives/           # Directives réutilisables
+├── tickets-cli/              # CLI tracking des tâches
+│   └── tickets/              # Stockage JSON des tickets
 └── docs/
     ├── GUIDE.md              # Guide d'utilisation complet
     └── stories/              # User stories
@@ -114,6 +131,7 @@ claude-prophet/
 - [Guide d'utilisation complet](docs/GUIDE.md)
 - [claude-cli README](claude-cli/README.md)
 - [context-cli README](context-cli/README.md)
+- [tickets-cli README](tickets-cli/README.md)
 
 ## Crédits
 

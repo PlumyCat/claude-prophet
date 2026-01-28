@@ -1,0 +1,5 @@
+#!/bin/bash
+# Wrapper for tickets-cli
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR/tickets-cli"
+exec uv run python main.py "$@"

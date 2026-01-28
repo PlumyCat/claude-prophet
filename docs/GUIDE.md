@@ -408,11 +408,16 @@ directives/code-quality.yaml:
 |----------|-------------|---------|
 | `create` | Crée un ticket | `./tickets create "Title"` |
 | `create --body` | Avec description | `./tickets create "Title" --body "Details"` |
+| `create --assign` | Création + assignation | `./tickets create "Title" --assign worker` |
 | `list` | Liste les tickets | `./tickets list` |
 | `list --status` | Filtré par état | `./tickets list --status open` |
+| `list --assigned` | Filtré par worker | `./tickets list --assigned my-worker` |
 | `show` | Détail d'un ticket | `./tickets show abc123` |
 | `assign` | Assigne un worker | `./tickets assign abc123 my-worker` |
 | `update --status` | Change l'état | `./tickets update abc123 --status done` |
+| `comment` | Ajoute un commentaire | `./tickets comment abc123 "Progress update"` |
+| `delete` | Supprime un ticket | `./tickets delete abc123 --force` |
+| `stats` | Statistiques globales | `./tickets stats` |
 
 ---
 
