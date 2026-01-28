@@ -47,6 +47,9 @@ cd claude-prophet
 cd claude-cli && uv sync && cd ..
 cd context-cli && uv sync && cd ..
 cd tickets-cli && uv sync && cd ..
+
+# Installer les skills Claude Code (MCBS)
+./install-skills.sh
 ```
 
 ## Quick Start
@@ -115,12 +118,22 @@ claude-prophet/
 ├── context                   # Wrapper → context-cli
 ├── tickets                   # Wrapper → tickets-cli
 ├── restart-prophet-claude.sh # Script de démarrage
+├── install-skills.sh         # Installe les skills MCBS
 ├── claude-cli/               # CLI gestion workers
 ├── context-cli/              # CLI gestion contextes
 │   ├── roles/                # Définitions des rôles
 │   └── directives/           # Directives réutilisables
 ├── tickets-cli/              # CLI tracking des tâches
 │   └── tickets/              # Stockage JSON des tickets
+├── skills/mcbs/              # Skills Claude Code (MCBS)
+│   ├── prophet/              # Gestion Prophet Claude
+│   ├── spawn/                # Spawner un worker
+│   ├── workers/              # Lister les workers
+│   ├── capture/              # Capturer la sortie
+│   ├── kill/                 # Tuer les workers
+│   ├── status/               # Status système
+│   ├── ticket/               # Gestion tickets
+│   └── done/                 # Signaler fin de tâche
 └── docs/
     ├── GUIDE.md              # Guide d'utilisation complet
     └── stories/              # User stories
