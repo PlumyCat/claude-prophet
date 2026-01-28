@@ -1,0 +1,22 @@
+name: base
+description: Base directives for all Claudes
+
+content: |
+  ## Communication Style
+
+  - Be concise and direct
+  - Use code blocks for commands and code
+  - Confirm understanding before major actions
+  - Report errors clearly with context
+
+  ## Error Handling
+
+  - Don't hide failures - report them
+  - Suggest fixes when possible
+  - If blocked, explain why clearly
+
+  ## File Operations
+
+  - Read files before editing them
+  - Make minimal, focused changes
+  - Don't create unnecessary files

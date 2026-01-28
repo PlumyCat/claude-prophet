@@ -1,0 +1,124 @@
+# Claude Prophet - Multi-Claude Bootstrap System
+
+Système d'orchestration multi-agents Claude permettant de déléguer des tâches à des workers isolés dans des sessions tmux.
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                     HUMAN                            │
+│                       │                              │
+│                       ▼                              │
+│  ┌─────────────────────────────────────────────┐    │
+│  │             PROPHET CLAUDE                   │    │
+│  │            (Orchestrateur)                   │    │
+│  │                                              │    │
+│  │  • Reçoit les demandes                      │    │
+│  │  • Délègue aux workers                      │    │
+│  │  • Supervise et intègre                     │    │
+│  └─────────────────────────────────────────────┘    │
+│                       │                              │
+│          ┌────────────┼────────────┐                │
+│          ▼            ▼            ▼                │
+│  ┌────────────┐ ┌────────────┐ ┌────────────┐      │
+│  │  WORKER 1  │ │  WORKER 2  │ │  WORKER N  │      │
+│  │   (tmux)   │ │   (tmux)   │ │   (tmux)   │      │
+│  └────────────┘ └────────────┘ └────────────┘      │
+│                                                      │
+└─────────────────────────────────────────────────────┘
+```
+
+## Installation
+
+### Prérequis
+
+- Python 3.11+
+- [uv](https://github.com/astral-sh/uv) (gestionnaire de paquets Python)
+- tmux
+- Claude Code CLI configuré
+
+### Setup
+
+```bash
+git clone https://github.com/PlumyCat/claude-prophet.git
+cd claude-prophet
+
+# Installer les dépendances de chaque CLI
+cd claude-cli && uv sync && cd ..
+cd context-cli && uv sync && cd ..
+```
+
+## Quick Start
+
+```bash
+# 1. Démarrer Prophet Claude
+./restart-prophet-claude.sh
+
+# 2. Attacher la session
+tmux attach -t prophet-claude
+
+# 3. Dans Prophet Claude, déléguer une tâche
+./claude spawn --role worker --name my-task "Implémenter une fonction fibonacci"
+
+# 4. Vérifier le worker
+./claude list
+./claude capture my-task
+```
+
+## Composants
+
+### claude-cli
+
+Gestion des workers tmux.
+
+```bash
+./claude spawn "prompt"              # Spawn un worker
+./claude spawn --name foo "prompt"   # Avec un nom
+./claude spawn --role worker "prompt" # Avec un rôle
+./claude capture foo --lines 50      # Voir la sortie
+./claude list                        # Lister les workers
+./claude kill foo                    # Tuer un worker
+./claude kill-all                    # Tuer tous les workers
+```
+
+### context-cli
+
+Gestion des rôles et directives.
+
+```bash
+./context list-roles        # Lister les rôles
+./context list-directives   # Lister les directives
+./context show worker       # Afficher le contexte d'un rôle
+./context settings worker   # Générer settings.json
+./context validate worker   # Valider un rôle
+```
+
+## Structure
+
+```
+claude-prophet/
+├── claude                    # Wrapper → claude-cli
+├── context                   # Wrapper → context-cli
+├── restart-prophet-claude.sh # Script de démarrage
+├── claude-cli/               # CLI gestion workers
+├── context-cli/              # CLI gestion contextes
+│   ├── roles/                # Définitions des rôles
+│   └── directives/           # Directives réutilisables
+└── docs/
+    ├── GUIDE.md              # Guide d'utilisation complet
+    └── stories/              # User stories
+```
+
+## Documentation
+
+- [Guide d'utilisation complet](docs/GUIDE.md)
+- [claude-cli README](claude-cli/README.md)
+- [context-cli README](context-cli/README.md)
+
+## Crédits
+
+Basé sur le tutoriel Multi-Claude Bootstrap de [@claudecodeonly](https://www.twitch.tv/claudecodeonly).
+
+## Licence
+
+MIT

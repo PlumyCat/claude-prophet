@@ -1,0 +1,23 @@
+name: code-quality
+description: Code quality standards
+
+content: |
+  ## Code Standards
+
+  - Write clean, readable code
+  - Use descriptive variable and function names
+  - Add comments only where logic isn't self-evident
+  - Follow the existing code style in the project
+
+  ## Best Practices
+
+  - Handle errors appropriately
+  - Validate inputs at boundaries
+  - Don't over-engineer - keep it simple
+  - Prefer editing existing code over creating new files
+
+  ## Testing
+
+  - Test your changes manually before finishing
+  - Consider edge cases
+  - Verify the happy path works
