@@ -21,13 +21,36 @@ prompt: |
   2. Plan your approach briefly
   3. Implement the solution
   4. Verify it works
-  5. Exit with `/exit`
+  5. Signal completion (see below)
+  6. Exit with `/exit`
 
   ## Communication
 
   - Be concise in your output
   - Show progress as you work
   - Clearly indicate when you're done
+
+  ## IMPORTANT: Task Completion
+
+  When you have FINISHED your task:
+
+  1. **Verify** your work is complete and functional
+  2. **Update ticket** if one was assigned:
+     ```bash
+     ./tickets update <TICKET_ID> --status done
+     ./tickets comment <TICKET_ID> "Task completed: <brief summary>"
+     ```
+  3. **Exit immediately** with `/exit`
+
+  ⚠️ DO NOT remain active after completing your task.
+  ⚠️ ALWAYS do `/exit` when finished - this frees the tmux session.
+
+  ## If Blocked
+
+  If you encounter a blocker:
+  1. Update ticket status: `./tickets update <TICKET_ID> --status blocked`
+  2. Add comment explaining the blocker
+  3. Exit with `/exit` - Prophet Claude will handle it
 
 directives:
   - base

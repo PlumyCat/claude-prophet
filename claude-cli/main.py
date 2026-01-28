@@ -76,7 +76,8 @@ def cli():
 @click.argument("prompt")
 @click.option("--name", "-n", default=None, help="Session name (auto-generated if not provided)")
 @click.option("--role", "-r", default=None, help="Role to apply from context-cli")
-def spawn(prompt: str, name: str | None, role: str | None):
+@click.option("--ticket", "-t", default=None, help="Ticket ID to associate with this worker")
+def spawn(prompt: str, name: str | None, role: str | None, ticket: str | None):
     """Spawn a Claude worker in a new tmux session.
 
     PROMPT is the task to give to the worker.
@@ -85,6 +86,7 @@ def spawn(prompt: str, name: str | None, role: str | None):
         spawn "Implement a fibonacci function"
         spawn --name fib-worker "Implement fibonacci"
         spawn --role worker "Fix the bug in auth.py"
+        spawn --role worker --ticket abc123 "Implement feature"
     """
     session = name or generate_session_name()
 
@@ -104,8 +106,21 @@ def spawn(prompt: str, name: str | None, role: str | None):
         else:
             click.echo(f"Warning: Could not load role '{role}'", err=True)
 
-    # Create tmux session with claude
-    result = run_tmux("new-session", "-d", "-s", session, "claude")
+    # Add ticket info to the prompt if provided
+    if ticket:
+        full_prompt += f"\n\n---\n\nTICKET ID: {ticket}\nWhen done, run: ./tickets update {ticket} --status done"
+        click.echo(f"Linked ticket: {ticket}")
+        # Update ticket status to in-progress
+        tickets_cli_path = Path(__file__).parent.parent / "tickets-cli"
+        if tickets_cli_path.exists():
+            subprocess.run(
+                ["uv", "run", "python", "main.py", "assign", ticket, session],
+                cwd=tickets_cli_path,
+                capture_output=True,
+            )
+
+    # Create tmux session with claude (skip permissions for autonomy)
+    result = run_tmux("new-session", "-d", "-s", session, "claude --dangerously-skip-permissions")
     if result.returncode != 0:
         click.echo(f"Error creating session: {result.stderr}", err=True)
         raise SystemExit(1)

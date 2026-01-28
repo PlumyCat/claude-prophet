@@ -24,9 +24,9 @@ if tmux has-session -t prophet-claude 2>/dev/null; then
     echo "  ✓ Old session terminated"
 fi
 
-# Start new session with claude
+# Start new session with claude (skip permissions for autonomy)
 echo "Starting Prophet Claude..."
-tmux new-session -d -s prophet-claude "claude"
+tmux new-session -d -s prophet-claude "claude --dangerously-skip-permissions"
 
 # Wait for Claude to start
 sleep 2
