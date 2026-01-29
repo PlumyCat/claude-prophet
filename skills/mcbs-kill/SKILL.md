@@ -1,5 +1,5 @@
 ---
-name: kill
+name: mcbs-kill
 description: Kill Workers
 allowed-tools: Bash
 ---

@@ -1,5 +1,5 @@
 ---
-name: spawn
+name: mcbs-spawn
 description: Spawn Worker
 allowed-tools: Bash
 ---

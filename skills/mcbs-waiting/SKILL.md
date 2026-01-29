@@ -1,5 +1,5 @@
 ---
-name: waiting
+name: mcbs-waiting
 description: Signal que le worker attend une réponse de Prophet
 allowed-tools: Bash, Read, Write
 ---

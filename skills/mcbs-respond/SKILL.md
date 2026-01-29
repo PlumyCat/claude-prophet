@@ -1,5 +1,5 @@
 ---
-name: respond
+name: mcbs-respond
 description: Répondre à un worker en attente
 allowed-tools: Bash, Read, Write
 ---

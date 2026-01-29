@@ -1,5 +1,5 @@
 ---
-name: ticket
+name: mcbs-ticket
 description: Ticket Management
 allowed-tools: Bash
 ---

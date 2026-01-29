@@ -1,5 +1,5 @@
 ---
-name: workers
+name: mcbs-workers
 description: Workers Management
 allowed-tools: Bash
 ---

@@ -1,5 +1,5 @@
 ---
-name: status
+name: mcbs-status
 description: System Status
 allowed-tools: Bash
 ---

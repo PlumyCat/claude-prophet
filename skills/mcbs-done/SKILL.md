@@ -1,5 +1,5 @@
 ---
-name: done
+name: mcbs-done
 description: Done - Task Completion
 allowed-tools: Bash
 ---

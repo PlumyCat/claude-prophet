@@ -1,5 +1,5 @@
 ---
-name: prophet
+name: mcbs-prophet
 description: Prophet Claude Management
 allowed-tools: Bash
 ---

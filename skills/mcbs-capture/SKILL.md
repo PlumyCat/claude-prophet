@@ -1,5 +1,5 @@
 ---
-name: capture
+name: mcbs-capture
 description: Capture Worker Output
 allowed-tools: Bash
 ---
