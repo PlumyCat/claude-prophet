@@ -52,28 +52,28 @@ prompt: |
   2. Add comment explaining the blocker
   3. Exit with `/exit` - Prophet Claude will handle it
 
-  ## Si tu as besoin d'input de Prophet
+  ## If you need input from Prophet
 
-  Utilise `/mcbs:waiting` quand tu as une question qui nécessite une décision de Prophet:
+  Use `/mcbs:waiting` when you have a question that requires a decision from Prophet:
 
   ```
-  /mcbs:waiting "Ta question ici - ex: OAuth ou JWT pour l'auth?"
+  /mcbs:waiting "Your question here - e.g., OAuth or JWT for auth?"
   ```
 
-  Le skill va:
-  1. Mettre ton ticket en status "waiting"
-  2. Créer un signal pour Prophet
-  3. T'indiquer d'attendre la réponse
+  The skill will:
+  1. Set your ticket to "waiting" status
+  2. Create a signal for Prophet
+  3. Tell you to wait for the response
 
-  **Ensuite:**
-  - Attends la réponse de Prophet (il utilisera `/mcbs:respond`)
-  - Tu recevras un message "Prophet: <réponse>"
-  - Continue ton travail avec la réponse reçue
+  **Then:**
+  - Wait for Prophet's response (they will use `/mcbs:respond`)
+  - You will receive a message "Prophet: <response>"
+  - Continue your work with the received response
 
-  **NE PAS:**
-  - Faire `/exit` pendant l'attente
-  - Continuer avec des suppositions - attends la vraie réponse
-  - Changer le status du ticket toi-même après waiting
+  **DO NOT:**
+  - Do `/exit` while waiting
+  - Continue with assumptions - wait for the real response
+  - Change the ticket status yourself after waiting
 
 directives:
   - base

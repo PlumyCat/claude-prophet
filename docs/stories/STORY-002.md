@@ -1,4 +1,4 @@
-# STORY-002: Améliorations UX Workers
+# STORY-002: Worker UX Improvements
 
 **Epic:** Multi-Agent Orchestration
 **Priority:** Should Have
@@ -13,103 +13,103 @@
 ## User Story
 
 As a **Prophet Claude**
-I want to **avoir des workers plus autonomes et un meilleur suivi**
-So that **le workflow de délégation soit plus fluide et moins manuel**
+I want to **have more autonomous workers and better tracking**
+So that **the delegation workflow is smoother and less manual**
 
 ---
 
 ## Description
 
-Suite aux tests du système Multi-Claude Bootstrap, plusieurs points d'amélioration ont été identifiés pour rendre les workers plus autonomes et améliorer l'expérience utilisateur.
+Following the Multi-Claude Bootstrap system tests, several improvement points were identified to make workers more autonomous and improve the user experience.
 
 ---
 
-## Issues identifiées
+## Identified Issues
 
-### 1. Auto-exit workers (Priorité: Haute)
-**Problème:** Les workers ne font pas `/exit` automatiquement après avoir terminé leur tâche.
-**Solution:** Ajouter une directive dans le rôle worker pour sortir avec `/exit` quand terminé.
+### 1. Worker Auto-exit (Priority: High)
+**Problem:** Workers don't automatically `/exit` after completing their task.
+**Solution:** Add a directive in the worker role to exit with `/exit` when done.
 
-### 2. Skill /done pour workers (Priorité: Haute)
-**Problème:** Le worker doit manuellement mettre à jour le ticket ET faire /exit.
-**Solution:** Créer un skill `/done` qui:
-- Met à jour le ticket associé en "done"
-- Ajoute un commentaire de completion
-- Exécute `/exit`
+### 2. /done Skill for Workers (Priority: High)
+**Problem:** The worker must manually update the ticket AND do /exit.
+**Solution:** Create a `/done` skill that:
+- Updates the associated ticket to "done"
+- Adds a completion comment
+- Executes `/exit`
 
-### 3. Intégration ticket-worker (Priorité: Moyenne)
-**Problème:** Pas de lien automatique entre ticket et worker.
+### 3. Ticket-Worker Integration (Priority: Medium)
+**Problem:** No automatic link between ticket and worker.
 **Solution:**
-- Option `--ticket` dans `claude spawn` pour lier un ticket
-- Le worker connaît son ticket ID via variable d'environnement ou contexte
+- `--ticket` option in `claude spawn` to link a ticket
+- Worker knows its ticket ID via environment variable or context
 
-### 4. Améliorer directives worker (Priorité: Moyenne)
-**Problème:** Les workers n'ont pas assez d'instructions sur comment terminer proprement.
-**Solution:** Enrichir `worker.yaml` avec des instructions claires de fin de tâche.
+### 4. Improve Worker Directives (Priority: Medium)
+**Problem:** Workers don't have enough instructions on how to properly terminate.
+**Solution:** Enrich `worker.yaml` with clear end-of-task instructions.
 
 ---
 
 ## Acceptance Criteria
 
-### Skill /done
-- [ ] Créer `.claude/commands/done.md`
-- [ ] Le skill met à jour le ticket en "done" si un ticket est associé
-- [ ] Le skill affiche un message de confirmation
-- [ ] Instructions pour faire `/exit` après
+### /done Skill
+- [ ] Create `.claude/commands/done.md`
+- [ ] Skill updates ticket to "done" if a ticket is associated
+- [ ] Skill displays a confirmation message
+- [ ] Instructions to do `/exit` after
 
-### Directives worker améliorées
-- [ ] Modifier `context-cli/roles/worker.yaml`
-- [ ] Ajouter instructions explicites de fin de tâche
-- [ ] Mentionner `/exit` obligatoire
+### Improved Worker Directives
+- [ ] Modify `context-cli/roles/worker.yaml`
+- [ ] Add explicit end-of-task instructions
+- [ ] Mention mandatory `/exit`
 
-### Option --ticket pour spawn
-- [ ] Ajouter `--ticket` à `claude spawn`
-- [ ] Passer le ticket ID dans le contexte du worker
-- [ ] Auto-update ticket en "in-progress" au spawn
+### --ticket Option for Spawn
+- [ ] Add `--ticket` to `claude spawn`
+- [ ] Pass ticket ID in worker context
+- [ ] Auto-update ticket to "in-progress" on spawn
 
 ---
 
 ## Technical Notes
 
-### Skill /done
+### /done Skill
 
 ```markdown
 # Done - Task Completion
 
-Signale la fin de la tâche assignée.
+Signals the end of the assigned task.
 
 ## Actions
-1. Si ticket associé: `./tickets update <id> --status done`
-2. Afficher message de confirmation
-3. Rappeler de faire `/exit`
+1. If ticket associated: `./tickets update <id> --status done`
+2. Display confirmation message
+3. Remind to do `/exit`
 ```
 
-### Worker role amélioré
+### Improved Worker Role
 
 ```yaml
-# Ajouter à worker.yaml
+# Add to worker.yaml
 completion_instructions: |
-  QUAND TU AS TERMINÉ:
-  1. Vérifie que tout est fait
-  2. Si ticket assigné: ./tickets update <ticket> --status done
-  3. Fais /exit pour libérer la session
+  WHEN YOU'RE DONE:
+  1. Verify everything is complete
+  2. If ticket assigned: ./tickets update <ticket> --status done
+  3. Do /exit to free the session
 
-  IMPORTANT: Ne reste JAMAIS actif après avoir terminé.
+  IMPORTANT: NEVER stay active after finishing.
 ```
 
 ---
 
 ## Definition of Done
 
-- [ ] Skill `/done` créé et fonctionnel
-- [ ] Role worker mis à jour avec instructions de fin
-- [ ] Option `--ticket` ajoutée à spawn
-- [ ] Tests manuels passés
-- [ ] Documentation mise à jour
+- [ ] `/done` skill created and functional
+- [ ] Worker role updated with end instructions
+- [ ] `--ticket` option added to spawn
+- [ ] Manual tests passed
+- [ ] Documentation updated
 
 ---
 
 ## Progress Tracking
 
 **Status History:**
-- 2025-01-28: Story créée suite aux tests
+- 2025-01-28: Story created following tests

@@ -1,131 +1,131 @@
 ---
 name: mcbs-respond
-description: Répondre à un worker en attente
+description: Respond to a waiting worker
 allowed-tools: Bash, Read, Write
 ---
 
-# Respond - Répondre à un worker en attente
+# Respond - Respond to a Waiting Worker
 
-Ce skill permet à Prophet Claude de répondre à un worker qui attend une réponse via `/mcbs:waiting`.
+This skill allows Prophet Claude to respond to a worker waiting for a response via `/mcbs:waiting`.
 
-## Utilisation
+## Usage
 
 ```
-/mcbs:respond <session> "Ta réponse"
+/mcbs:respond <session> "Your response"
 ```
 
-## Paramètres
+## Parameters
 
-1. **Session** (requis) : Nom de la session tmux du worker (ex: `claude-auth`)
-2. **Response** (requis) : La réponse à envoyer au worker
+1. **Session** (required): Name of the worker's tmux session (e.g., `claude-auth`)
+2. **Response** (required): The response to send to the worker
 
-## Actions à effectuer
+## Actions to Perform
 
-### 1. Vérifier le signal waiting
+### 1. Check the waiting signal
 
 ```bash
-cat /home/eric/projects/twich-test/signals/waiting/<session>.json
+cat ./signals/waiting/<session>.json
 ```
 
-Cela donne le contexte: ticket_id, message original, timestamp.
+This provides context: ticket_id, original message, timestamp.
 
-### 2. Écrire la réponse
+### 2. Write the response
 
-Créer le fichier `/home/eric/projects/twich-test/signals/responses/<session>.json`:
+Create the file `./signals/responses/<session>.json`:
 
 ```json
 {
   "session": "<session>",
   "ticket_id": "<ticket-id-from-waiting>",
   "timestamp": "<ISO-8601>",
-  "response": "<ta réponse>",
+  "response": "<your response>",
   "from": "prophet"
 }
 ```
 
-Commande:
+Command:
 ```bash
-cat > /home/eric/projects/twich-test/signals/responses/<session>.json << 'EOF'
+cat > ./signals/responses/<session>.json << 'EOF'
 {
   "session": "<session>",
   "ticket_id": "<ticket-id>",
   "timestamp": "<timestamp>",
-  "response": "<réponse>",
+  "response": "<response>",
   "from": "prophet"
 }
 EOF
 ```
 
-### 3. Mettre à jour le ticket
+### 3. Update the ticket
 
 ```bash
-/home/eric/projects/twich-test/tickets update <ticket-id> --status in-progress
-/home/eric/projects/twich-test/tickets comment <ticket-id> "Prophet responded: <résumé>"
+./tickets update <ticket-id> --status in-progress
+./tickets comment <ticket-id> "Prophet responded: <summary>"
 ```
 
-### 4. Envoyer le message au worker
+### 4. Send message to worker
 
 ```bash
-/home/eric/projects/twich-test/claude send <session> "Prophet: <ta réponse>"
+./claude send <session> "Prophet: <your response>"
 ```
 
-### 5. Supprimer le signal waiting
+### 5. Delete the waiting signal
 
 ```bash
-rm /home/eric/projects/twich-test/signals/waiting/<session>.json
+rm ./signals/waiting/<session>.json
 ```
 
-## Workflow complet
+## Complete Workflow
 
 ```
-Prophet voit worker waiting (via /mcbs:status)
+Prophet sees worker waiting (via /mcbs:status)
        │
        ▼
-  /mcbs:respond claude-auth "Utilise OAuth2"
+  /mcbs:respond claude-auth "Use OAuth2"
        │
-       ├─► Lit signals/waiting/claude-auth.json
-       ├─► Écrit signals/responses/claude-auth.json
+       ├─► Read signals/waiting/claude-auth.json
+       ├─► Write signals/responses/claude-auth.json
        ├─► tickets update → in-progress
        ├─► ./claude send claude-auth "Prophet: ..."
        ├─► rm signals/waiting/claude-auth.json
        │
        ▼
-  Worker reçoit la réponse
+  Worker receives the response
        │
        ▼
-  Worker continue le travail
+  Worker continues work
 ```
 
-## Exemple
+## Example
 
 ```bash
-# Voir les workers en attente
+# See waiting workers
 /mcbs:status
 
-# Output montre:
-# ⏳ Workers en attente:
-#   claude-auth: "OAuth ou JWT?" (depuis 5 min)
+# Output shows:
+# ⏳ Workers waiting:
+#   claude-auth: "OAuth or JWT?" (since 5 min)
 
-# Répondre
-/mcbs:respond claude-auth "Utilise OAuth2 avec refresh tokens. Voir la doc dans /docs/auth.md"
+# Respond
+/mcbs:respond claude-auth "Use OAuth2 with refresh tokens. See the doc in /docs/auth.md"
 ```
 
-## Voir les workers en attente
+## View Waiting Workers
 
-Pour lister les workers en attente:
+To list waiting workers:
 
 ```bash
-ls -la /home/eric/projects/twich-test/signals/waiting/
+ls -la ./signals/waiting/
 
-# Voir le détail d'un signal
-cat /home/eric/projects/twich-test/signals/waiting/<session>.json
+# View signal details
+cat ./signals/waiting/<session>.json
 ```
 
-Ou utiliser `/mcbs:status` qui affiche cette section.
+Or use `/mcbs:status` which displays this section.
 
 ## Notes
 
-- Toujours répondre aux workers en attente rapidement
-- La réponse est envoyée via `./claude send` pour notification immédiate
-- Le fichier responses/ sert de backup si le send échoue
-- Le ticket repasse automatiquement en `in-progress`
+- Always respond to waiting workers promptly
+- Response is sent via `./claude send` for immediate notification
+- The responses/ file serves as backup if send fails
+- Ticket automatically returns to `in-progress`

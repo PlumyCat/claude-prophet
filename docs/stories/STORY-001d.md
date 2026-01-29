@@ -1,4 +1,4 @@
-# STORY-001d: Intégration et Documentation
+# STORY-001d: Integration and Documentation
 
 **Epic:** Multi-Agent Orchestration
 **Priority:** Must Have
@@ -14,24 +14,24 @@
 
 ## User Story
 
-As a **développeur solo**
-I want to **avoir un système Multi-Claude intégré et documenté**
-So that **je puisse démarrer facilement et comprendre comment utiliser le système**
+As a **solo developer**
+I want to **have an integrated and documented Multi-Claude system**
+So that **I can easily get started and understand how to use the system**
 
 ---
 
 ## Description
 
 ### Background
-Cette story finalise le système en intégrant les CLIs ensemble, créant les scripts de démarrage, et documentant le workflow complet. C'est la "glue" qui rend le système utilisable en production.
+This story finalizes the system by integrating the CLIs together, creating startup scripts, and documenting the complete workflow. It's the "glue" that makes the system production-ready.
 
-### Livrables
+### Deliverables
 
-1. Script `restart-prophet-claude.sh` pour démarrer Prophet Claude
-2. Intégration claude-cli + context-cli (flag --role)
-3. Wrapper scripts pour simplifier les commandes
-4. Documentation complète du workflow
-5. CLAUDE.md de base pour Prophet Claude
+1. `restart-prophet-claude.sh` script to start Prophet Claude
+2. claude-cli + context-cli integration (--role flag)
+3. Wrapper scripts to simplify commands
+4. Complete workflow documentation
+5. Basic CLAUDE.md for Prophet Claude
 
 ---
 
@@ -39,64 +39,64 @@ Cette story finalise le système en intégrant les CLIs ensemble, créant les sc
 
 ### In Scope
 
-- Script de démarrage Prophet Claude
-- Intégration --role entre claude-cli et context-cli
+- Prophet Claude startup script
+- --role integration between claude-cli and context-cli
 - Wrapper scripts (claude, context, tickets)
-- README principal avec workflow complet
-- CLAUDE.md minimal pour bootstrap
-- Exemple de session complète
+- Main README with complete workflow
+- Minimal bootstrap CLAUDE.md
+- Complete session example
 
 ### Out of Scope
 
-- Installation automatisée (on documente, c'est tout)
-- Tests automatisés
+- Automated installation (documentation only)
+- Automated tests
 - CI/CD
 
 ---
 
 ## Acceptance Criteria
 
-### Script de démarrage
+### Startup Script
 
-- [ ] `./restart-prophet-claude.sh` démarre Prophet Claude
-- [ ] Applique le contexte du rôle prophet-claude
-- [ ] Génère settings.json depuis context-cli
-- [ ] Peut être relancé sans problème (idempotent)
+- [ ] `./restart-prophet-claude.sh` starts Prophet Claude
+- [ ] Applies the prophet-claude role context
+- [ ] Generates settings.json from context-cli
+- [ ] Can be relaunched without issues (idempotent)
 
-### Intégration claude-cli + context-cli
+### claude-cli + context-cli Integration
 
-- [ ] `claude spawn --role worker "prompt"` fonctionne
-- [ ] Le contexte du rôle est injecté dans le prompt
-- [ ] Fonctionne sans --role (comportement par défaut)
+- [ ] `claude spawn --role worker "prompt"` works
+- [ ] Role context is injected into the prompt
+- [ ] Works without --role (default behavior)
 
-### Wrapper scripts
+### Wrapper Scripts
 
-- [ ] `./claude <command>` équivalent à `cd claude-cli && uv run python main.py <command>`
-- [ ] `./context <command>` équivalent à `cd context-cli && uv run python main.py <command>`
-- [ ] `./tickets <command>` équivalent à `cd tickets-cli && uv run python main.py <command>`
-- [ ] Scripts exécutables (chmod +x)
+- [ ] `./claude <command>` equivalent to `cd claude-cli && uv run python main.py <command>`
+- [ ] `./context <command>` equivalent to `cd context-cli && uv run python main.py <command>`
+- [ ] `./tickets <command>` equivalent to `cd tickets-cli && uv run python main.py <command>`
+- [ ] Scripts are executable (chmod +x)
 
 ### Documentation
 
-- [ ] README.md principal avec :
-  - [ ] Vue d'ensemble du système
-  - [ ] Prérequis d'installation
+- [ ] Main README.md with:
+  - [ ] System overview
+  - [ ] Installation prerequisites
   - [ ] Quick start (5 min)
-  - [ ] Workflow complet documenté
-  - [ ] Référence des commandes
-- [ ] CLAUDE.md minimal pour Prophet Claude
+  - [ ] Complete workflow documented
+  - [ ] Command reference
+- [ ] Minimal CLAUDE.md for Prophet Claude
 
 ---
 
 ## Technical Notes
 
-### Structure Finale
+### Final Structure
 
 ```
 bootstrap/
-├── README.md                     # Documentation principale
-├── CLAUDE.md                     # Contexte Prophet (minimal)
-├── restart-prophet-claude.sh     # Script de démarrage
+├── README.md                     # Main documentation
+├── CLAUDE.md                     # Prophet context (minimal)
+├── restart-prophet-claude.sh     # Startup script
 ├── claude                        # Wrapper → claude-cli
 ├── context                       # Wrapper → context-cli
 ├── tickets                       # Wrapper → tickets-cli
@@ -144,10 +144,10 @@ cd "$SCRIPT_DIR/claude-cli"
 exec uv run python main.py "$@"
 ```
 
-### Intégration --role dans claude-cli
+### --role Integration in claude-cli
 
 ```python
-# Dans spawn(), ajouter:
+# In spawn(), add:
 if role:
     # Get context from context-cli
     result = subprocess.run(
@@ -164,7 +164,7 @@ else:
     full_prompt = prompt
 ```
 
-### CLAUDE.md Minimal
+### Minimal CLAUDE.md
 
 ```markdown
 # Prophet Claude
@@ -198,7 +198,7 @@ Orchestrate multiple Claude instances for parallel, asynchronous work.
 
 ## Overview
 
-[Diagram ASCII de l'architecture]
+[ASCII architecture diagram]
 
 ## Prerequisites
 
@@ -216,71 +216,71 @@ Orchestrate multiple Claude instances for parallel, asynchronous work.
 ## Workflow
 
 ### Basic Delegation
-[Exemple complet]
+[Complete example]
 
 ### Using Tickets
-[Exemple avec tickets]
+[Example with tickets]
 
 ## Command Reference
 
 ### claude-cli
-[Toutes les commandes]
+[All commands]
 
 ### context-cli
-[Toutes les commandes]
+[All commands]
 
 ### tickets-cli
-[Toutes les commandes]
+[All commands]
 
 ## Troubleshooting
 
-[Problèmes courants]
+[Common issues]
 ```
 
 ---
 
 ## Dependencies
 
-### Prérequis
+### Prerequisites
 
-- STORY-001a (claude-cli) : Obligatoire
-- STORY-001b (context-cli) : Obligatoire pour --role
-- STORY-001c (tickets-cli) : Optionnel (wrapper script si présent)
+- STORY-001a (claude-cli): Required
+- STORY-001b (context-cli): Required for --role
+- STORY-001c (tickets-cli): Optional (wrapper script if present)
 
 ---
 
 ## Definition of Done
 
-- [ ] `./restart-prophet-claude.sh` fonctionne
-- [ ] `./claude spawn --role worker "test"` fonctionne
-- [ ] Wrapper scripts créés et exécutables
-- [ ] README.md complet
-- [ ] CLAUDE.md minimal créé
-- [ ] Workflow complet testé de bout en bout
+- [ ] `./restart-prophet-claude.sh` works
+- [ ] `./claude spawn --role worker "test"` works
+- [ ] Wrapper scripts created and executable
+- [ ] README.md complete
+- [ ] Minimal CLAUDE.md created
+- [ ] Complete workflow tested end-to-end
 
 ---
 
 ## Test Plan
 
-### Test End-to-End
+### End-to-End Test
 
 ```bash
-# 1. Démarrer Prophet Claude
+# 1. Start Prophet Claude
 ./restart-prophet-claude.sh
 tmux attach -t prophet-claude
 
-# 2. Dans Prophet Claude, déléguer une tâche
+# 2. In Prophet Claude, delegate a task
 ./claude spawn --role worker --name test-worker "List files in /tmp and exit"
 
-# 3. Vérifier le worker
+# 3. Check the worker
 ./claude list
 ./claude capture test-worker
 
-# 4. Créer un ticket (si tickets-cli présent)
+# 4. Create a ticket (if tickets-cli present)
 ./tickets create "Test task"
 ./tickets list
 
-# 5. Nettoyer
+# 5. Clean up
 ./claude kill-all --force
 ```
 
@@ -289,8 +289,8 @@ tmux attach -t prophet-claude
 ## Progress Tracking
 
 **Status History:**
-- 2025-01-28: Story créée
+- 2025-01-28: Story created
 
 ---
 
-**Fin du Sprint 1** - Système Multi-Claude Bootstrap opérationnel !
+**End of Sprint 1** - Multi-Claude Bootstrap System operational!

@@ -36,32 +36,32 @@ prompt: |
   - **NEVER** attach to worker sessions - use capture instead
   - **ALWAYS** give workers clear, specific instructions
 
-  ## Gestion Workers via Claude Code Tasks
+  ## Worker Management via Claude Code Tasks
 
-  Utilise les Tasks de Claude Code pour tracker les workers en parallèle des tickets.
+  Use Claude Code Tasks to track workers in parallel with tickets.
 
-  ### Quand tu spawn un worker:
+  ### When you spawn a worker:
 
-  1. Créer une Task Claude Code:
+  1. Create a Claude Code Task:
      ```
      TaskCreate(
        subject="<task description>",
-       description="<details complets>",
+       description="<full details>",
        activeForm="Worker processing..."
      )
      ```
 
-  2. Créer le ticket:
+  2. Create the ticket:
      ```bash
      ./tickets create "<task>" --assign <worker-name>
      ```
 
-  3. Spawner le worker:
+  3. Spawn the worker:
      ```bash
      ./claude spawn --name <name> --role worker --ticket <ticket-id> "<task>"
      ```
 
-  4. Mettre à jour la Task avec metadata:
+  4. Update the Task with metadata:
      ```
      TaskUpdate(
        taskId="<id>",
@@ -69,20 +69,20 @@ prompt: |
      )
      ```
 
-  ### Pour monitorer:
+  ### To monitor:
 
-  - `TaskList` → voir toutes les Tasks/workers actifs
-  - `/mcbs:status` → vue complète incluant workers en attente
-  - `./claude list` → workers tmux actifs
+  - `TaskList` → see all active Tasks/workers
+  - `/mcbs:status` → complete view including waiting workers
+  - `./claude list` → active tmux workers
 
-  ### Répondre à un worker en attente:
+  ### Respond to a waiting worker:
 
-  Quand `/mcbs:status` montre des workers waiting:
+  When `/mcbs:status` shows waiting workers:
   ```
-  /mcbs:respond <session> "Ta réponse ici"
+  /mcbs:respond <session> "Your response here"
   ```
 
-  ### Quand un worker termine:
+  ### When a worker finishes:
 
   ```
   TaskUpdate(taskId="<id>", status="completed")

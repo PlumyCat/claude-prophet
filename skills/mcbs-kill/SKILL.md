@@ -6,48 +6,48 @@ allowed-tools: Bash
 
 # Kill Workers
 
-Termine un ou plusieurs workers Claude.
+Terminates one or more Claude workers.
 
-## Commandes
+## Commands
 
-### Tuer un worker spécifique
+### Kill a specific worker
 ```bash
-/home/eric/projects/twich-test/claude kill <worker-name>
+./claude kill <worker-name>
 ```
 
-### Tuer tous les workers
+### Kill all workers
 ```bash
-/home/eric/projects/twich-test/claude kill-all
-# Avec confirmation skip :
-/home/eric/projects/twich-test/claude kill-all --force
+./claude kill-all
+# Skip confirmation:
+./claude kill-all --force
 ```
 
-## Avant de tuer
+## Before Killing
 
-1. Vérifier les workers actifs :
+1. Check active workers:
    ```bash
-   /home/eric/projects/twich-test/claude list
+   ./claude list
    ```
 
-2. Capturer la sortie si besoin :
+2. Capture output if needed:
    ```bash
-   /home/eric/projects/twich-test/claude capture <worker-name> --lines 1000
+   ./claude capture <worker-name> --lines 1000
    ```
 
-3. Mettre à jour le ticket si applicable :
+3. Update ticket if applicable:
    ```bash
-   /home/eric/projects/twich-test/tickets update <ticket-id> --status blocked
+   ./tickets update <ticket-id> --status blocked
    ```
 
-## Cas d'usage
+## Use Cases
 
-- **Worker bloqué** : Ne répond plus ou en boucle
-- **Mauvaise tâche** : Instructions incorrectes
-- **Nettoyage** : Fin de session
-- **Erreur** : Worker en erreur
+- **Blocked worker**: No longer responding or in a loop
+- **Wrong task**: Incorrect instructions
+- **Cleanup**: End of session
+- **Error**: Worker in error state
 
 ## Notes
 
-- `kill` ne supprime pas les tickets associés
-- Workers terminent normalement avec `/exit`
-- `kill-all` ne tue PAS `prophet-claude`
+- `kill` does not delete associated tickets
+- Workers normally terminate with `/exit`
+- `kill-all` does NOT kill `prophet-claude`

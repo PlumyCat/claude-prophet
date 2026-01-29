@@ -1,4 +1,4 @@
-# STORY-001b: Implémenter context-cli
+# STORY-001b: Implement context-cli
 
 **Epic:** Multi-Agent Orchestration
 **Priority:** Should Have
@@ -14,29 +14,29 @@
 
 ## User Story
 
-As a **développeur solo**
-I want to **définir des rôles et directives pour mes workers Claude**
-So that **chaque worker ait le bon contexte et les bonnes permissions pour sa tâche**
+As a **solo developer**
+I want to **define roles and directives for my Claude workers**
+So that **each worker has the right context and permissions for its task**
 
 ---
 
 ## Description
 
 ### Background
-Le context-cli permet de structurer les contextes Claude de manière modulaire. Au lieu d'un gros CLAUDE.md monolithique, on définit des rôles (prophet-claude, worker, manager) et des directives réutilisables (code-quality, security, etc.). Le CLI génère ensuite le contexte complet et peut produire un settings.json pour les permissions.
+The context-cli allows structuring Claude contexts in a modular way. Instead of a large monolithic CLAUDE.md, we define roles (prophet-claude, worker, manager) and reusable directives (code-quality, security, etc.). The CLI then generates the complete context and can produce a settings.json for permissions.
 
 ### Architecture
 
 ```
 context-cli/
 ├── roles/
-│   ├── prophet-claude.yaml    # Orchestrateur principal
-│   ├── worker.yaml            # Worker générique
-│   └── code-reviewer.yaml     # Worker spécialisé
+│   ├── prophet-claude.yaml    # Main orchestrator
+│   ├── worker.yaml            # Generic worker
+│   └── code-reviewer.yaml     # Specialized worker
 ├── directives/
-│   ├── base.yaml              # Directives communes
-│   ├── code-quality.yaml      # Standards de code
-│   └── security.yaml          # Règles de sécurité
+│   ├── base.yaml              # Common directives
+│   ├── code-quality.yaml      # Code standards
+│   └── security.yaml          # Security rules
 └── main.py
 ```
 
@@ -46,64 +46,64 @@ context-cli/
 
 ### In Scope
 
-- Structure roles/ et directives/ en YAML
-- Commande `show <role>` : affiche le contexte combiné
-- Commande `list-roles` : liste les rôles disponibles
-- Commande `list-directives` : liste les directives
-- Commande `settings <role>` : génère settings.json
-- Rôles de base : prophet-claude, worker
-- Directives de base : base, code-quality
+- roles/ and directives/ structure in YAML
+- `show <role>` command: displays combined context
+- `list-roles` command: lists available roles
+- `list-directives` command: lists directives
+- `settings <role>` command: generates settings.json
+- Base roles: prophet-claude, worker
+- Base directives: base, code-quality
 
 ### Out of Scope
 
-- Mémoires persistantes par Claude (future feature)
-- Intégration automatique avec claude-cli
-- UI pour éditer les rôles
+- Persistent memories per Claude (future feature)
+- Automatic integration with claude-cli
+- UI to edit roles
 
 ---
 
 ## Acceptance Criteria
 
-### Structure YAML
+### YAML Structure
 
-- [ ] Dossier `roles/` créé avec au moins 2 fichiers YAML
-- [ ] Dossier `directives/` créé avec au moins 2 fichiers YAML
-- [ ] Format rôle : name, description, prompt, directives[]
-- [ ] Format directive : name, description, content
+- [ ] `roles/` folder created with at least 2 YAML files
+- [ ] `directives/` folder created with at least 2 YAML files
+- [ ] Role format: name, description, prompt, directives[]
+- [ ] Directive format: name, description, content
 
-### Commande show
+### show command
 
-- [ ] `context show prophet-claude` affiche le contexte combiné
-- [ ] Le prompt du rôle est inclus
-- [ ] Les directives listées sont résolues et incluses
-- [ ] Erreur claire si rôle inexistant
+- [ ] `context show prophet-claude` displays combined context
+- [ ] Role prompt is included
+- [ ] Listed directives are resolved and included
+- [ ] Clear error if role doesn't exist
 
-### Commande list-roles
+### list-roles command
 
-- [ ] `context list-roles` affiche tous les rôles
-- [ ] Format : nom + description courte
+- [ ] `context list-roles` displays all roles
+- [ ] Format: name + short description
 
-### Commande list-directives
+### list-directives command
 
-- [ ] `context list-directives` affiche toutes les directives
-- [ ] Format : nom + description courte
+- [ ] `context list-directives` displays all directives
+- [ ] Format: name + short description
 
-### Commande settings
+### settings command
 
-- [ ] `context settings prophet-claude` génère un JSON valide
-- [ ] Le JSON contient les permissions allow/deny
-- [ ] Peut être redirigé vers un fichier
+- [ ] `context settings prophet-claude` generates valid JSON
+- [ ] JSON contains allow/deny permissions
+- [ ] Can be redirected to a file
 
-### Rôles de base
+### Base Roles
 
-- [ ] `prophet-claude` : orchestrateur, délègue aux workers
-- [ ] `worker` : exécute une tâche spécifique, sort avec /exit
+- [ ] `prophet-claude`: orchestrator, delegates to workers
+- [ ] `worker`: executes a specific task, exits with /exit
 
 ---
 
 ## Technical Notes
 
-### Format Rôle YAML
+### YAML Role Format
 
 ```yaml
 # roles/prophet-claude.yaml
@@ -140,7 +140,7 @@ permissions:
     - "Bash(rm -rf:*)"
 ```
 
-### Format Directive YAML
+### YAML Directive Format
 
 ```yaml
 # directives/base.yaml
@@ -256,27 +256,27 @@ if __name__ == "__main__":
 
 ## Dependencies
 
-### Prérequis
+### Prerequisites
 
 - Python 3.11+
-- uv installé
+- uv installed
 - PyYAML
 
-### Dépendances Stories
+### Story Dependencies
 
-- **STORY-001a** : claude-cli doit exister pour utiliser le flag --role
+- **STORY-001a**: claude-cli must exist to use the --role flag
 
 ---
 
 ## Definition of Done
 
-- [ ] Projet créé avec `uv init`
-- [ ] Structure roles/ et directives/ créée
-- [ ] 2 rôles définis : prophet-claude, worker
-- [ ] 2 directives définies : base, code-quality
-- [ ] 4 commandes fonctionnelles
-- [ ] README.md documenté
-- [ ] Intégration testée avec claude-cli --role
+- [ ] Project created with `uv init`
+- [ ] roles/ and directives/ structure created
+- [ ] 2 roles defined: prophet-claude, worker
+- [ ] 2 directives defined: base, code-quality
+- [ ] 4 commands functional
+- [ ] README.md documented
+- [ ] Integration tested with claude-cli --role
 
 ---
 
@@ -308,8 +308,8 @@ cat settings.json
 ## Progress Tracking
 
 **Status History:**
-- 2025-01-28: Story créée
+- 2025-01-28: Story created
 
 ---
 
-**Prochaine story:** STORY-001c (tickets-cli)
+**Next story:** STORY-001c (tickets-cli)

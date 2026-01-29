@@ -6,46 +6,46 @@ allowed-tools: Bash
 
 # Prophet Claude Management
 
-Gère le (re)démarrage de Prophet Claude dans une session tmux dédiée.
+Manages (re)starting Prophet Claude in a dedicated tmux session.
 
-## Lancer/Relancer Prophet Claude
+## Launch/Relaunch Prophet Claude
 
 ```bash
-/home/eric/projects/twich-test/restart-prophet-claude.sh
+./restart-prophet-claude.sh
 ```
 
-Le chemin absolu permet de lancer depuis n'importe quel dossier.
+The absolute path allows launching from any folder.
 
-Ce script :
-1. Génère `settings.json` depuis context-cli avec le rôle prophet-claude
-2. Tue l'ancienne session tmux si elle existe
-3. Démarre une nouvelle session `prophet-claude` avec Claude
-4. Envoie le prompt d'initialisation
+This script:
+1. Generates `settings.json` from context-cli with the prophet-claude role
+2. Kills the old tmux session if it exists
+3. Starts a new `prophet-claude` session with Claude
+4. Sends the initialization prompt
 
-## Commandes utiles
+## Useful Commands
 
 ```bash
-# Voir si Prophet Claude tourne
+# Check if Prophet Claude is running
 tmux has-session -t prophet-claude 2>/dev/null && echo "Running" || echo "Not running"
 
-# Attacher à la session
+# Attach to the session
 tmux attach -t prophet-claude
 
-# Voir l'état sans attacher
+# View state without attaching
 tmux capture-pane -t prophet-claude -p | tail -20
 
-# Tuer la session
+# Kill the session
 tmux kill-session -t prophet-claude
 ```
 
 ## Architecture
 
 ```
-Toi (terminal normal)
-  └── claude -c (cette conversation = Prophet)
+You (normal terminal)
+  └── claude -c (this conversation = Prophet)
         ├── /spawn worker-1 → tmux session
         ├── /spawn worker-2 → tmux session
         └── /spawn worker-3 → tmux session
 ```
 
-Prophet Claude peut aussi tourner dans tmux pour des sessions longues autonomes.
+Prophet Claude can also run in tmux for long autonomous sessions.

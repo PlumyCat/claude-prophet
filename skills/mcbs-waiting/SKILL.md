@@ -1,59 +1,59 @@
 ---
 name: mcbs-waiting
-description: Signal que le worker attend une réponse de Prophet
+description: Signal that worker is waiting for Prophet response
 allowed-tools: Bash, Read, Write
 ---
 
-# Waiting - Attente de réponse Prophet
+# Waiting - Waiting for Prophet Response
 
-Ce skill permet à un worker de signaler qu'il a besoin d'une réponse de Prophet Claude avant de continuer.
+This skill allows a worker to signal that it needs a response from Prophet Claude before continuing.
 
-## Utilisation
+## Usage
 
 ```
-/mcbs:waiting "Ta question pour Prophet"
+/mcbs:waiting "Your question for Prophet"
 ```
 
-## Paramètres
+## Parameters
 
-1. **Message** (requis) : La question ou demande pour Prophet
-2. **Ticket ID** (optionnel) : Si pas fourni, essaie de le détecter depuis le contexte
+1. **Message** (required): The question or request for Prophet
+2. **Ticket ID** (optional): If not provided, tries to detect from context
 
-## Actions à effectuer
+## Actions to Perform
 
-### 1. Identifier la session et le ticket
+### 1. Identify session and ticket
 
 ```bash
-# Récupérer le nom de la session tmux courante
+# Get the current tmux session name
 tmux display-message -p '#S'
 ```
 
-Si le ticket ID n'est pas connu, demander à l'utilisateur ou chercher dans le contexte.
+If the ticket ID is not known, ask the user or search in context.
 
-### 2. Mettre à jour le ticket en status "waiting"
+### 2. Update ticket to "waiting" status
 
 ```bash
-/home/eric/projects/twich-test/tickets update <ticket-id> --status waiting
-/home/eric/projects/twich-test/tickets comment <ticket-id> "Waiting for Prophet: <message>"
+./tickets update <ticket-id> --status waiting
+./tickets comment <ticket-id> "Waiting for Prophet: <message>"
 ```
 
-### 3. Créer le fichier signal
+### 3. Create the signal file
 
-Écrire le fichier JSON dans `/home/eric/projects/twich-test/signals/waiting/<session>.json`:
+Write the JSON file to `./signals/waiting/<session>.json`:
 
 ```json
 {
   "session": "<session-name>",
   "ticket_id": "<ticket-id>",
   "timestamp": "<ISO-8601>",
-  "message": "<question pour Prophet>",
+  "message": "<question for Prophet>",
   "type": "question"
 }
 ```
 
-Commande pour créer le fichier (remplacer les variables):
+Command to create the file (replace variables):
 ```bash
-cat > /home/eric/projects/twich-test/signals/waiting/<session>.json << 'EOF'
+cat > ./signals/waiting/<session>.json << 'EOF'
 {
   "session": "<session>",
   "ticket_id": "<ticket-id>",
@@ -64,47 +64,47 @@ cat > /home/eric/projects/twich-test/signals/waiting/<session>.json << 'EOF'
 EOF
 ```
 
-### 4. Attendre la réponse (polling)
+### 4. Wait for response (polling)
 
-Vérifier périodiquement si une réponse existe:
+Check periodically if a response exists:
 
 ```bash
-# Vérifier si réponse disponible
-ls /home/eric/projects/twich-test/signals/responses/<session>.json 2>/dev/null
+# Check if response available
+ls ./signals/responses/<session>.json 2>/dev/null
 ```
 
-Si le fichier existe, lire la réponse:
+If the file exists, read the response:
 ```bash
-cat /home/eric/projects/twich-test/signals/responses/<session>.json
+cat ./signals/responses/<session>.json
 ```
 
-### 5. Traiter la réponse
+### 5. Process the response
 
-Une fois la réponse reçue:
-1. Lire et afficher la réponse de Prophet
-2. Supprimer le fichier signal waiting (Prophet l'a déjà fait normalement)
-3. Continuer le travail avec la réponse
+Once the response is received:
+1. Read and display Prophet's response
+2. Delete the waiting signal file (Prophet has normally already done this)
+3. Continue work with the response
 
-## Format du signal waiting
+## Waiting Signal Format
 
 ```json
 {
   "session": "claude-auth",
   "ticket_id": "abc123",
   "timestamp": "2026-01-29T14:30:00Z",
-  "message": "OAuth ou JWT pour l'authentification?",
+  "message": "OAuth or JWT for authentication?",
   "type": "question"
 }
 ```
 
-## Format de la réponse (signals/responses/)
+## Response Format (signals/responses/)
 
 ```json
 {
   "session": "claude-auth",
   "ticket_id": "abc123",
   "timestamp": "2026-01-29T14:35:00Z",
-  "response": "Utilise OAuth2 avec refresh tokens",
+  "response": "Use OAuth2 with refresh tokens",
   "from": "prophet"
 }
 ```
@@ -112,33 +112,33 @@ Une fois la réponse reçue:
 ## Workflow
 
 ```
-Worker a une question
+Worker has a question
        │
        ▼
-  /mcbs:waiting "OAuth ou JWT?"
+  /mcbs:waiting "OAuth or JWT?"
        │
        ├─► tickets update → waiting
-       ├─► Écrit signals/waiting/<session>.json
+       ├─► Write signals/waiting/<session>.json
        │
        ▼
-  Worker attend (poll responses/)
+  Worker waits (poll responses/)
        │
        ▼
-  Prophet voit via /mcbs:status
+  Prophet sees via /mcbs:status
        │
        ▼
-  Prophet répond via /mcbs:respond
+  Prophet responds via /mcbs:respond
        │
        ▼
-  Worker lit la réponse
+  Worker reads the response
        │
        ▼
-  Continue le travail
+  Continue work
 ```
 
-## Notes importantes
+## Important Notes
 
-- **NE PAS** faire `/exit` pendant l'attente
-- **NE PAS** continuer avec des suppositions - attendre la réponse
-- Si bloqué trop longtemps, mettre le ticket en `blocked` au lieu de `waiting`
-- Prophet sera notifié via `/mcbs:status` des workers en attente
+- **DO NOT** do `/exit` while waiting
+- **DO NOT** continue with assumptions - wait for the response
+- If blocked too long, set ticket to `blocked` instead of `waiting`
+- Prophet will be notified via `/mcbs:status` of waiting workers

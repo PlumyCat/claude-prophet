@@ -1,48 +1,48 @@
-# Multi-Claude Bootstrap System - Guide d'Utilisation
+# Multi-Claude Bootstrap System - Usage Guide
 
-> Documentation complète du système d'orchestration multi-agents Claude
+> Complete documentation for the multi-agent Claude orchestration system
 
-## Table des Matières
+## Table of Contents
 
-1. [Vue d'ensemble](#vue-densemble)
+1. [Overview](#overview)
 2. [Architecture](#architecture)
 3. [Installation](#installation)
 4. [Quick Start](#quick-start)
-5. [Concepts Clés](#concepts-clés)
+5. [Key Concepts](#key-concepts)
 6. [Workflows](#workflows)
-7. [Référence des Commandes](#référence-des-commandes)
-8. [Bonnes Pratiques](#bonnes-pratiques)
+7. [Command Reference](#command-reference)
+8. [Best Practices](#best-practices)
 9. [Troubleshooting](#troubleshooting)
 
 ---
 
-## Vue d'ensemble
+## Overview
 
-### Qu'est-ce que le Multi-Claude Bootstrap ?
+### What is the Multi-Claude Bootstrap?
 
-Un système permettant d'orchestrer **plusieurs instances Claude** travaillant en parallèle. Un Claude principal ("Prophet Claude") délègue des tâches à des workers isolés dans des sessions tmux.
+A system for orchestrating **multiple Claude instances** working in parallel. A main Claude ("Prophet Claude") delegates tasks to isolated workers in tmux sessions.
 
-### Pourquoi utiliser ce système ?
+### Why use this system?
 
-| Problème | Solution |
-|----------|----------|
-| Tâches complexes = contexte saturé | Déléguer à des workers spécialisés |
-| Travail séquentiel = lent | Workers parallèles asynchrones |
-| Contexte perdu au restart | Rôles et directives persistants |
-| Pas de tracking des tâches | Système de tickets intégré |
+| Problem | Solution |
+|---------|----------|
+| Complex tasks = saturated context | Delegate to specialized workers |
+| Sequential work = slow | Asynchronous parallel workers |
+| Context lost on restart | Persistent roles and directives |
+| No task tracking | Integrated ticket system |
 
-### Cas d'usage
+### Use Cases
 
-- **Développement parallèle** : Un worker sur le backend, un sur le frontend
-- **Code review** : Worker spécialisé avec directives de review
-- **Refactoring massif** : Plusieurs workers sur différents modules
-- **Documentation** : Worker dédié à la génération de docs
+- **Parallel development**: One worker on backend, one on frontend
+- **Code review**: Specialized worker with review directives
+- **Massive refactoring**: Multiple workers on different modules
+- **Documentation**: Dedicated worker for doc generation
 
 ---
 
 ## Architecture
 
-### Diagramme Global
+### Global Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -51,14 +51,14 @@ Un système permettant d'orchestrer **plusieurs instances Claude** travaillant e
 │                           ▼                                     │
 │  ┌─────────────────────────────────────────────────────────┐    │
 │  │                   PROPHET CLAUDE                        │    │
-│  │                   (Orchestrateur)                       │    │
+│  │                   (Orchestrator)                        │    │
 │  │                                                         │    │
-│  │  • Reçoit les demandes humaines                         │    │
-│  │  • Décompose en sous-tâches                             │    │
-│  │  • Délègue aux workers                                  │    │
-│  │  • Supervise et intègre                                 │    │
+│  │  • Receives human requests                              │    │
+│  │  • Breaks down into sub-tasks                           │    │
+│  │  • Delegates to workers                                 │    │
+│  │  • Supervises and integrates                            │    │
 │  │                                                         │    │
-│  │  Outils: claude-cli, context-cli, tickets-cli           │    │
+│  │  Tools: claude-cli, context-cli, tickets-cli            │    │
 │  └─────────────────────────────────────────────────────────┘    │
 │                           │                                     │
 │            ┌──────────────┼──────────────┐                      │
@@ -68,44 +68,44 @@ Un système permettant d'orchestrer **plusieurs instances Claude** travaillant e
 │  │   WORKER 1   │ │   WORKER 2   │ │   WORKER N   │             │
 │  │   (tmux)     │ │   (tmux)     │ │   (tmux)     │             │
 │  │              │ │              │ │              │             │
-│  │ • Tâche      │ │ • Tâche      │ │ • Tâche      │             │
-│  │   spécifique │ │   spécifique │ │   spécifique │             │
-│  │ • Contexte   │ │ • Contexte   │ │ • Contexte   │             │
-│  │   isolé      │ │   isolé      │ │   isolé      │             │
+│  │ • Specific   │ │ • Specific   │ │ • Specific   │             │
+│  │   task       │ │   task       │ │   task       │             │
+│  │ • Isolated   │ │ • Isolated   │ │ • Isolated   │             │
+│  │   context    │ │   context    │ │   context    │             │
 │  │ • Auto-exit  │ │ • Auto-exit  │ │ • Auto-exit  │             │
 │  └──────────────┘ └──────────────┘ └──────────────┘             │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Composants
+### Components
 
 ```
 bootstrap/
 │
-├── claude-cli/          # Gestion des workers tmux
-│   ├── spawn            # Créer un worker
-│   ├── capture          # Voir la sortie
-│   ├── list             # Lister les workers
-│   └── kill             # Terminer un worker
+├── claude-cli/          # Tmux worker management
+│   ├── spawn            # Create a worker
+│   ├── capture          # View output
+│   ├── list             # List workers
+│   └── kill             # Terminate a worker
 │
-├── context-cli/         # Gestion des contextes
-│   ├── roles/           # Définitions des rôles
-│   ├── directives/      # Règles réutilisables
-│   ├── show             # Afficher un contexte
-│   └── settings         # Générer settings.json
+├── context-cli/         # Context management
+│   ├── roles/           # Role definitions
+│   ├── directives/      # Reusable rules
+│   ├── show             # Display a context
+│   └── settings         # Generate settings.json
 │
-├── tickets-cli/         # Tracking des tâches
-│   ├── tickets/         # Stockage JSON
-│   ├── create           # Créer un ticket
-│   ├── assign           # Assigner un worker
-│   └── update           # Changer le statut
+├── tickets-cli/         # Task tracking
+│   ├── tickets/         # JSON storage
+│   ├── create           # Create a ticket
+│   ├── assign           # Assign a worker
+│   └── update           # Change status
 │
 └── scripts/
     └── restart-prophet-claude.sh
 ```
 
-### Flux de Données
+### Data Flow
 
 ```
                     ┌─────────────┐
@@ -115,14 +115,14 @@ bootstrap/
                     │ directives/ │
                     └──────┬──────┘
                            │
-                           │ génère contexte
+                           │ generates context
                            ▼
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+┌─────────────────┐     ┌─────────────┐     ┌─────────────┐
 │ tickets-cli │◄────│ claude-cli  │────►│    tmux     │
 │             │     │             │     │             │
 │ • tracking  │     │ • spawn     │     │ • sessions  │
-│ • états     │     │ • capture   │     │ • isolation │
-│ • historique│     │ • kill      │     │ • send-keys │
+│ • states    │     │ • capture   │     │ • isolation │
+│ • history   │     │ • kill      │     │ • send-keys │
 └─────────────┘     └─────────────┘     └─────────────┘
 ```
 
@@ -130,13 +130,13 @@ bootstrap/
 
 ## Installation
 
-### Prérequis
+### Prerequisites
 
 ```bash
 # Python 3.11+
 python3 --version  # >= 3.11
 
-# uv (gestionnaire de paquets Python)
+# uv (Python package manager)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # tmux
@@ -144,38 +144,38 @@ sudo apt install tmux  # Ubuntu/Debian
 brew install tmux      # macOS
 
 # Claude Code CLI
-# Doit être installé et configuré avec un compte actif
+# Must be installed and configured with an active account
 claude --version
 ```
 
-### Installation du système
+### System Installation
 
 ```bash
-# Cloner ou créer le dossier
+# Clone or create the folder
 mkdir -p ~/workspace/bootstrap
 cd ~/workspace/bootstrap
 
-# Initialiser claude-cli
+# Initialize claude-cli
 mkdir claude-cli && cd claude-cli
 uv init
 uv add click
-# ... copier main.py
+# ... copy main.py
 
-# Initialiser context-cli
+# Initialize context-cli
 cd .. && mkdir context-cli && cd context-cli
 uv init
 uv add click pyyaml
-# ... copier main.py et créer roles/, directives/
+# ... copy main.py and create roles/, directives/
 
-# Initialiser tickets-cli (optionnel)
+# Initialize tickets-cli (optional)
 cd .. && mkdir tickets-cli && cd tickets-cli
 uv init
 uv add click
-# ... copier main.py
+# ... copy main.py
 
-# Créer les wrapper scripts
+# Create wrapper scripts
 cd ..
-# ... créer claude, context, tickets scripts
+# ... create claude, context, tickets scripts
 chmod +x claude context tickets restart-prophet-claude.sh
 ```
 
@@ -183,62 +183,62 @@ chmod +x claude context tickets restart-prophet-claude.sh
 
 ## Quick Start
 
-### 1. Démarrer Prophet Claude
+### 1. Start Prophet Claude
 
 ```bash
 cd ~/workspace/bootstrap
 ./restart-prophet-claude.sh
 
-# Ou manuellement :
+# Or manually:
 tmux new-session -d -s prophet-claude "claude"
 tmux attach -t prophet-claude
 ```
 
-### 2. Déléguer votre première tâche
+### 2. Delegate your first task
 
-Dans Prophet Claude :
+In Prophet Claude:
 
 ```bash
-# Spawner un worker
+# Spawn a worker
 ./claude spawn --name hello-worker "Say 'Hello World' and then exit with /exit"
 
-# Vérifier qu'il tourne
+# Check that it's running
 ./claude list
 
-# Voir sa sortie
+# View its output
 ./claude capture hello-worker
 
-# Nettoyer
+# Clean up
 ./claude kill hello-worker
 ```
 
-### 3. Utiliser les rôles
+### 3. Use roles
 
 ```bash
-# Voir les rôles disponibles
+# View available roles
 ./context list-roles
 
-# Spawner avec un rôle
+# Spawn with a role
 ./claude spawn --role worker --name code-worker "Implement a fibonacci function in Python"
 
-# Le worker reçoit le contexte du rôle "worker"
+# The worker receives the "worker" role context
 ```
 
 ---
 
-## Concepts Clés
+## Key Concepts
 
 ### Prophet Claude vs Workers
 
 | Aspect | Prophet Claude | Worker Claude |
 |--------|----------------|---------------|
-| **Rôle** | Orchestrateur | Exécutant |
-| **Durée de vie** | Permanent | Temporaire |
-| **Contexte** | Complet (système) | Spécialisé (tâche) |
-| **Actions** | Déléguer, superviser | Implémenter, reporter |
-| **Session tmux** | `prophet-claude` | `claude-XXXXXXXX` |
+| **Role** | Orchestrator | Executor |
+| **Lifespan** | Permanent | Temporary |
+| **Context** | Complete (system) | Specialized (task) |
+| **Actions** | Delegate, supervise | Implement, report |
+| **Tmux session** | `prophet-claude` | `claude-XXXXXXXX` |
 
-### Sessions tmux
+### Tmux Sessions
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -249,7 +249,7 @@ Dans Prophet Claude :
 │  │ (attached)          │  │ (detached)          │   │
 │  │                     │  │                     │   │
 │  │ Human ◄──► Claude   │  │ Worker Claude       │   │
-│  │                     │  │ (autonome)          │   │
+│  │                     │  │ (autonomous)        │   │
 │  └─────────────────────┘  └─────────────────────┘   │
 │                                                     │
 │  ┌─────────────────────┐  ┌─────────────────────┐   │
@@ -260,37 +260,37 @@ Dans Prophet Claude :
 └─────────────────────────────────────────────────────┘
 ```
 
-### Rôles et Directives
+### Roles and Directives
 
 ```yaml
-# Structure d'un rôle
+# Role structure
 roles/worker.yaml:
   name: worker
-  description: "Worker pour tâches déléguées"
+  description: "Worker for delegated tasks"
   prompt: |
-    Tu es un Worker Claude. Complète la tâche et sors.
+    You are a Worker Claude. Complete the task and exit.
 
-    CONTRAINTES:
-    - Focus sur la tâche donnée
-    - Ne démarre pas de nouvelles tâches
-    - Sors avec /exit quand terminé
+    CONSTRAINTS:
+    - Focus on the given task
+    - Don't start new tasks
+    - Exit with /exit when done
 
   directives:
-    - base           # Inclut directives/base.yaml
-    - code-quality   # Inclut directives/code-quality.yaml
+    - base           # Includes directives/base.yaml
+    - code-quality   # Includes directives/code-quality.yaml
 
-# Structure d'une directive
+# Directive structure
 directives/code-quality.yaml:
   name: code-quality
-  description: "Standards de qualité du code"
+  description: "Code quality standards"
   content: |
-    ## Standards de Code
-    - Tests pour chaque fonction
-    - Noms descriptifs
-    - Pas de code mort
+    ## Code Standards
+    - Tests for each function
+    - Descriptive names
+    - No dead code
 ```
 
-### Système de Tickets
+### Ticket System
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -312,156 +312,156 @@ directives/code-quality.yaml:
 
 ## Workflows
 
-### Workflow Basique : Délégation Simple
+### Basic Workflow: Simple Delegation
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                                                         │
-│  1. Human demande une tâche complexe                    │
+│  1. Human requests a complex task                       │
 │     │                                                   │
 │     ▼                                                   │
-│  2. Prophet Claude analyse et décompose                 │
+│  2. Prophet Claude analyzes and decomposes              │
 │     │                                                   │
 │     ├─────────────────────────────────────────┐         │
 │     ▼                                         ▼         │
-│  3. ./claude spawn "Sous-tâche 1"    ./claude spawn "Sous-tâche 2"
+│  3. ./claude spawn "Sub-task 1"    ./claude spawn "Sub-task 2"
 │     │                                         │         │
 │     ▼                                         ▼         │
-│  4. Worker 1 exécute                 Worker 2 exécute   │
+│  4. Worker 1 executes              Worker 2 executes    │
 │     │                                         │         │
 │     ▼                                         ▼         │
 │  5. ./claude capture worker1    ./claude capture worker2│
 │     │                                         │         │
 │     └─────────────────┬───────────────────────┘         │
 │                       ▼                                 │
-│  6. Prophet Claude intègre les résultats                │
+│  6. Prophet Claude integrates results                   │
 │     │                                                   │
 │     ▼                                                   │
-│  7. Human reçoit le livrable complet                    │
+│  7. Human receives complete deliverable                 │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Workflow Avancé : Avec Tickets
+### Advanced Workflow: With Tickets
 
 ```bash
-# Prophet Claude reçoit : "Ajoute l'authentification JWT"
+# Prophet Claude receives: "Add JWT authentication"
 
-# 1. Créer le ticket
+# 1. Create the ticket
 ./tickets create "Implement JWT Auth" --body "Backend + Frontend"
 
-# 2. Spawner et assigner
+# 2. Spawn and assign
 ./claude spawn --role worker --name auth-backend "Implement JWT backend"
 ./tickets assign <ticket-id> auth-backend
 
-# 3. Superviser
+# 3. Supervise
 ./claude capture auth-backend --lines 50
 ./tickets show <ticket-id>
 
-# 4. Quand terminé
+# 4. When complete
 ./tickets update <ticket-id> --status done
 ```
 
-### Workflow : Code Review
+### Workflow: Code Review
 
 ```bash
-# Définir un rôle reviewer
+# Define a reviewer role
 # context-cli/roles/code-reviewer.yaml
 
-# Spawner le reviewer
+# Spawn the reviewer
 ./claude spawn --role code-reviewer --name reviewer-pr123 \
   "Review the changes in src/auth.py for security issues"
 
-# Capturer le rapport
+# Capture the report
 ./claude capture reviewer-pr123 > review-report.md
 ```
 
 ---
 
-## Référence des Commandes
+## Command Reference
 
 ### claude-cli
 
-| Commande | Description | Exemple |
-|----------|-------------|---------|
-| `spawn` | Crée un worker | `./claude spawn "task"` |
-| `spawn --name` | Worker nommé | `./claude spawn --name my-worker "task"` |
-| `spawn --role` | Avec un rôle | `./claude spawn --role worker "task"` |
-| `capture` | Voir la sortie | `./claude capture my-worker` |
-| `capture --lines` | N dernières lignes | `./claude capture my-worker --lines 100` |
-| `list` | Lister les workers | `./claude list` |
-| `kill` | Tuer un worker | `./claude kill my-worker` |
-| `kill-all` | Tuer tous | `./claude kill-all --force` |
+| Command | Description | Example |
+|---------|-------------|---------|
+| `spawn` | Create a worker | `./claude spawn "task"` |
+| `spawn --name` | Named worker | `./claude spawn --name my-worker "task"` |
+| `spawn --role` | With a role | `./claude spawn --role worker "task"` |
+| `capture` | View output | `./claude capture my-worker` |
+| `capture --lines` | Last N lines | `./claude capture my-worker --lines 100` |
+| `list` | List workers | `./claude list` |
+| `kill` | Kill a worker | `./claude kill my-worker` |
+| `kill-all` | Kill all | `./claude kill-all --force` |
 
 ### context-cli
 
-| Commande | Description | Exemple |
-|----------|-------------|---------|
-| `show` | Affiche le contexte | `./context show worker` |
-| `list-roles` | Liste les rôles | `./context list-roles` |
-| `list-directives` | Liste les directives | `./context list-directives` |
-| `settings` | Génère settings.json | `./context settings prophet-claude` |
+| Command | Description | Example |
+|---------|-------------|---------|
+| `show` | Display context | `./context show worker` |
+| `list-roles` | List roles | `./context list-roles` |
+| `list-directives` | List directives | `./context list-directives` |
+| `settings` | Generate settings.json | `./context settings prophet-claude` |
 
 ### tickets-cli
 
-| Commande | Description | Exemple |
-|----------|-------------|---------|
-| `create` | Crée un ticket | `./tickets create "Title"` |
-| `create --body` | Avec description | `./tickets create "Title" --body "Details"` |
-| `create --assign` | Création + assignation | `./tickets create "Title" --assign worker` |
-| `list` | Liste les tickets | `./tickets list` |
-| `list --status` | Filtré par état | `./tickets list --status open` |
-| `list --assigned` | Filtré par worker | `./tickets list --assigned my-worker` |
-| `show` | Détail d'un ticket | `./tickets show abc123` |
-| `assign` | Assigne un worker | `./tickets assign abc123 my-worker` |
-| `update --status` | Change l'état | `./tickets update abc123 --status done` |
-| `comment` | Ajoute un commentaire | `./tickets comment abc123 "Progress update"` |
-| `delete` | Supprime un ticket | `./tickets delete abc123 --force` |
-| `stats` | Statistiques globales | `./tickets stats` |
+| Command | Description | Example |
+|---------|-------------|---------|
+| `create` | Create a ticket | `./tickets create "Title"` |
+| `create --body` | With description | `./tickets create "Title" --body "Details"` |
+| `create --assign` | Create + assign | `./tickets create "Title" --assign worker` |
+| `list` | List tickets | `./tickets list` |
+| `list --status` | Filter by status | `./tickets list --status open` |
+| `list --assigned` | Filter by worker | `./tickets list --assigned my-worker` |
+| `show` | Ticket details | `./tickets show abc123` |
+| `assign` | Assign a worker | `./tickets assign abc123 my-worker` |
+| `update --status` | Change status | `./tickets update abc123 --status done` |
+| `comment` | Add a comment | `./tickets comment abc123 "Progress update"` |
+| `delete` | Delete a ticket | `./tickets delete abc123 --force` |
+| `stats` | Global statistics | `./tickets stats` |
 
 ---
 
-## Bonnes Pratiques
+## Best Practices
 
-### Pour Prophet Claude
-
-```
-✅ DO:
-- Déléguer les tâches non-triviales
-- Donner des instructions claires aux workers
-- Vérifier régulièrement avec capture
-- Utiliser des noms de session descriptifs
-
-❌ DON'T:
-- Faire le travail d'implémentation
-- Attendre qu'un worker finisse (non-bloquant)
-- Tuer manuellement les sessions tmux
-- S'attacher aux sessions workers
-```
-
-### Pour les Workers
+### For Prophet Claude
 
 ```
 ✅ DO:
-- Se concentrer sur la tâche assignée
-- Sortir avec /exit quand terminé
-- Reporter les blocages clairement
+- Delegate non-trivial tasks
+- Give clear instructions to workers
+- Check regularly with capture
+- Use descriptive session names
 
 ❌ DON'T:
-- Démarrer de nouvelles tâches non demandées
-- Modifier des fichiers hors scope
-- Rester actif après avoir terminé
+- Do implementation work
+- Wait for a worker to finish (non-blocking)
+- Manually kill tmux sessions
+- Attach to worker sessions
 ```
 
-### Nommage des Sessions
+### For Workers
 
 ```
-Bon:
+✅ DO:
+- Focus on the assigned task
+- Exit with /exit when done
+- Report blockers clearly
+
+❌ DON'T:
+- Start new unasked tasks
+- Modify files out of scope
+- Stay active after completion
+```
+
+### Session Naming
+
+```
+Good:
 - auth-backend-worker
 - feature-42-implementation
 - code-review-pr-123
 
-Mauvais:
+Bad:
 - worker1
 - test
 - claude-session
@@ -474,79 +474,79 @@ Mauvais:
 ### "Session not found"
 
 ```bash
-# Vérifier les sessions existantes
+# Check existing sessions
 tmux list-sessions
 
-# Le worker a peut-être terminé (auto-exit)
-# Relancer si nécessaire
+# The worker may have finished (auto-exit)
+# Relaunch if needed
 ./claude spawn --name <name> "task"
 ```
 
 ### "No active workers"
 
 ```bash
-# Normal si tous ont terminé avec /exit
-# Vérifier l'historique tmux
+# Normal if all have finished with /exit
+# Check tmux history
 tmux list-sessions -a
 ```
 
-### Worker bloqué
+### Stuck worker
 
 ```bash
-# Capturer pour voir l'état
+# Capture to see the state
 ./claude capture <worker> --lines 100
 
-# Si vraiment bloqué, tuer et respawner
+# If really stuck, kill and respawn
 ./claude kill <worker>
-./claude spawn --name <worker> "task corrigée"
+./claude spawn --name <worker> "corrected task"
 ```
 
-### Contexte non appliqué
+### Context not applied
 
 ```bash
-# Vérifier que le rôle existe
+# Check that the role exists
 ./context list-roles
 
-# Vérifier le contenu du rôle
+# Check the role content
 ./context show <role>
 
-# Regénérer settings.json si nécessaire
+# Regenerate settings.json if needed
 ./context settings <role> > settings.json
 ```
 
 ---
 
-## Annexes
+## Appendices
 
-### Commandes tmux Utiles
+### Useful tmux Commands
 
 ```bash
-# Lister les sessions
+# List sessions
 tmux list-sessions
 
-# S'attacher à une session (debug uniquement)
+# Attach to a session (debug only)
 tmux attach -t <session>
 
-# Détacher (Ctrl+B puis D)
+# Detach (Ctrl+B then D)
 
-# Capturer manuellement
+# Capture manually
 tmux capture-pane -t <session> -p
 
-# Envoyer une commande
-tmux send-keys -t <session> "commande" Enter
+# Send a command
+tmux send-keys -t <session> "command" Enter
 ```
 
-### Exemple de Session Complète
+### Complete Session Example
 
 ```bash
-# Terminal 1 : Prophet Claude
+# Terminal 1: Prophet Claude
 ./restart-prophet-claude.sh
 tmux attach -t prophet-claude
 
-# Dans Prophet Claude :
-> Implémente un système de cache Redis pour l'API
+# In Prophet Claude:
+> Implement a Redis cache system for the API
 
-# Prophet répond et délègue :
+# Prophet responds and delegates:
 ./claude spawn --role worker --name cache-impl \
   "Implement Redis caching in src/api/cache.py:
    - Connection pool
@@ -557,22 +557,22 @@ tmux attach -t prophet-claude
 ./claude spawn --role worker --name cache-tests \
   "Write tests for Redis cache in tests/test_cache.py"
 
-# Prophet vérifie :
+# Prophet checks:
 ./claude list
 # cache-impl (running)
 # cache-tests (running)
 
 ./claude capture cache-impl --lines 30
-# ... voir la progression ...
+# ... see progress ...
 
-# Quand terminé :
+# When done:
 ./claude capture cache-impl > /tmp/cache-impl-result.md
 ./claude capture cache-tests > /tmp/cache-tests-result.md
 
-# Intégrer et continuer
+# Integrate and continue
 ```
 
 ---
 
-*Documentation générée à partir du tutoriel Multi-Claude Bootstrap de @claudecodeonly*
-*Dernière mise à jour : 2025-01-28*
+*Documentation generated from the Multi-Claude Bootstrap tutorial by @claudecodeonly*
+*Last updated: 2025-01-28*

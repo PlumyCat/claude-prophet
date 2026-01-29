@@ -1,6 +1,6 @@
 # claude-cli
 
-CLI pour spawner et gérer des workers Claude dans des sessions tmux.
+CLI for spawning and managing Claude workers in tmux sessions.
 
 ## Installation
 
@@ -9,38 +9,38 @@ cd claude-cli
 uv sync
 ```
 
-## Commandes
+## Commands
 
 ### spawn
 
-Crée un nouveau worker Claude dans une session tmux.
+Creates a new Claude worker in a tmux session.
 
 ```bash
-# Spawn basique (nom auto-généré)
-uv run python main.py spawn "Implémente une fonction fibonacci"
+# Basic spawn (auto-generated name)
+uv run python main.py spawn "Implement a fibonacci function"
 
-# Spawn avec nom personnalisé
-uv run python main.py spawn --name fib-worker "Implémente fibonacci"
+# Spawn with custom name
+uv run python main.py spawn --name fib-worker "Implement fibonacci"
 
-# Spawn avec un rôle (requiert context-cli)
-uv run python main.py spawn --role worker "Fix le bug dans auth.py"
+# Spawn with a role (requires context-cli)
+uv run python main.py spawn --role worker "Fix the bug in auth.py"
 ```
 
 ### capture
 
-Capture la sortie d'un worker.
+Captures a worker's output.
 
 ```bash
-# Capture les 30 dernières lignes (défaut)
+# Capture the last 30 lines (default)
 uv run python main.py capture my-worker
 
-# Capture les 100 dernières lignes
+# Capture the last 100 lines
 uv run python main.py capture my-worker --lines 100
 ```
 
 ### list
 
-Liste tous les workers actifs.
+Lists all active workers.
 
 ```bash
 uv run python main.py list
@@ -48,7 +48,7 @@ uv run python main.py list
 
 ### kill
 
-Termine un worker spécifique.
+Terminates a specific worker.
 
 ```bash
 uv run python main.py kill my-worker
@@ -56,46 +56,46 @@ uv run python main.py kill my-worker
 
 ### kill-all
 
-Termine tous les workers Claude.
+Terminates all Claude workers.
 
 ```bash
-# Avec confirmation
+# With confirmation
 uv run python main.py kill-all
 
-# Sans confirmation
+# Without confirmation
 uv run python main.py kill-all --force
 ```
 
 ### send
 
-Envoie du texte à un worker (avancé).
+Sends text to a worker (advanced).
 
 ```bash
-# Envoyer /exit pour terminer
+# Send /exit to terminate
 uv run python main.py send my-worker "/exit"
 
-# Envoyer une instruction supplémentaire
-uv run python main.py send my-worker "Continue avec l'étape suivante"
+# Send an additional instruction
+uv run python main.py send my-worker "Continue with the next step"
 ```
 
-## Exemple de workflow
+## Workflow Example
 
 ```bash
-# 1. Spawner un worker
-uv run python main.py spawn --name auth-impl "Implémente l'authentification JWT"
+# 1. Spawn a worker
+uv run python main.py spawn --name auth-impl "Implement JWT authentication"
 
-# 2. Vérifier qu'il tourne
+# 2. Check that it's running
 uv run python main.py list
 
-# 3. Voir sa progression
+# 3. View its progress
 uv run python main.py capture auth-impl --lines 50
 
-# 4. Quand terminé, nettoyer
+# 4. When done, clean up
 uv run python main.py kill auth-impl
 ```
 
 ## Notes
 
-- Les sessions sont préfixées par `claude-`
-- Utilisez `capture` plutôt que `tmux attach` pour surveiller
-- Les workers peuvent auto-terminer avec `/exit`
+- Sessions are prefixed with `claude-`
+- Use `capture` rather than `tmux attach` to monitor
+- Workers can auto-terminate with `/exit`

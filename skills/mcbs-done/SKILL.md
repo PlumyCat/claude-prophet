@@ -6,30 +6,30 @@ allowed-tools: Bash
 
 # Done - Task Completion
 
-Signale la fin d'une tâche assignée à un worker.
+Signals the completion of a task assigned to a worker.
 
-## Utilisation
+## Usage
 
-Ce skill est destiné aux **workers** pour signaler qu'ils ont terminé leur tâche.
+This skill is intended for **workers** to signal that they have completed their task.
 
-## Actions à effectuer
+## Actions to Perform
 
-### 1. Demander le ticket ID (si pas connu)
+### 1. Ask for ticket ID (if not known)
 
-### 2. Mettre à jour le ticket
+### 2. Update the ticket
 ```bash
-/home/eric/projects/twich-test/tickets update <ticket-id> --status done
-/home/eric/projects/twich-test/tickets comment <ticket-id> "Task completed by worker"
+./tickets update <ticket-id> --status done
+./tickets comment <ticket-id> "Task completed by worker"
 ```
 
-### 3. Rappeler /exit
+### 3. Remind /exit
 
-IMPORTANT: Toujours rappeler au worker de faire `/exit` pour libérer la session tmux.
+IMPORTANT: Always remind the worker to do `/exit` to free the tmux session.
 
 ## Workflow
 
 ```
-Worker termine sa tâche
+Worker completes its task
        │
        ▼
    /done <ticket-id>
@@ -38,16 +38,16 @@ Worker termine sa tâche
        ├─► tickets comment → "Completed"
        │
        ▼
-   Rappel: /exit
+   Reminder: /exit
        │
        ▼
-   Worker fait /exit
+   Worker does /exit
        │
        ▼
-   Session tmux libérée
+   Tmux session freed
 ```
 
 ## Notes
 
-- Ce skill ne fait PAS `/exit` automatiquement
-- Si pas de ticket, juste rappeler de faire `/exit`
+- This skill does NOT do `/exit` automatically
+- If no ticket, just remind to do `/exit`

@@ -1,6 +1,6 @@
 # tickets-cli
 
-CLI pour tracker les tâches déléguées aux workers Claude.
+CLI for tracking tasks delegated to Claude workers.
 
 ## Installation
 
@@ -14,14 +14,14 @@ uv sync
 ```
 Prophet Claude                          Worker Claude
       │                                       │
-      ├─► tickets create "Auth JWT"           │
+      ├─► tickets create "JWT Auth"           │
       │   └─► Ticket #abc123 created          │
       │                                       │
       ├─► tickets assign abc123 auth-worker   │
       │                                       │
       ├─► claude spawn --name auth-worker ... │
       │                                       │
-      │                                       ├─► (travaille...)
+      │                                       ├─► (working...)
       │                                       │
       ├─► tickets show abc123                 │
       │   └─► Status: in-progress             │
@@ -32,79 +32,79 @@ Prophet Claude                          Worker Claude
           └─► abc123: done ✓                  │
 ```
 
-## Commandes
+## Commands
 
 ### create
 
-Crée un nouveau ticket.
+Creates a new ticket.
 
 ```bash
-# Basique
+# Basic
 uv run python main.py create "Implement JWT auth"
 
-# Avec description
+# With description
 uv run python main.py create "Fix login" --body "Users can't login with email"
 
-# Avec assignation immédiate
+# With immediate assignment
 uv run python main.py create "Add tests" --assign test-worker
 ```
 
 ### list
 
-Liste les tickets.
+Lists tickets.
 
 ```bash
-# Tous les tickets
+# All tickets
 uv run python main.py list
 
-# Filtrer par status
+# Filter by status
 uv run python main.py list --status open
 uv run python main.py list --status in-progress
 
-# Filtrer par worker
+# Filter by worker
 uv run python main.py list --assigned auth-worker
 ```
 
 ### show
 
-Affiche les détails d'un ticket.
+Displays ticket details.
 
 ```bash
 uv run python main.py show abc123
 
-# Supporte les IDs partiels
+# Supports partial IDs
 uv run python main.py show abc
 ```
 
 ### update
 
-Met à jour un ticket.
+Updates a ticket.
 
 ```bash
-# Changer le status
+# Change status
 uv run python main.py update abc123 --status done
 uv run python main.py update abc123 --status blocked
 
-# Mettre à jour la description
+# Update description
 uv run python main.py update abc123 --body "New description"
 
-# Changer le titre
+# Change title
 uv run python main.py update abc123 --title "New title"
 ```
 
 ### assign
 
-Assigne un worker à un ticket.
+Assigns a worker to a ticket.
 
 ```bash
 uv run python main.py assign abc123 auth-worker
 ```
 
-Note: Si le ticket est "open", il passe automatiquement en "in-progress".
+Note: If the ticket is "open", it automatically changes to "in-progress".
 
 ### comment
 
-Ajoute un commentaire à un ticket.
+Adds a comment to a ticket.
 
 ```bash
 uv run python main.py comment abc123 "Started implementation, 50% done"
@@ -112,35 +112,35 @@ uv run python main.py comment abc123 "Started implementation, 50% done"
 
 ### delete
 
-Supprime un ticket.
+Deletes a ticket.
 
 ```bash
 uv run python main.py delete abc123
 
-# Sans confirmation
+# Without confirmation
 uv run python main.py delete abc123 --force
 ```
 
 ### stats
 
-Affiche les statistiques.
+Displays statistics.
 
 ```bash
 uv run python main.py stats
 ```
 
-## États
+## States
 
-| État | Icône | Description |
-|------|-------|-------------|
-| open | ○ | Nouveau ticket, pas encore assigné |
-| in-progress | ◐ | En cours de traitement |
-| blocked | ✗ | Bloqué (attente d'info, dépendance) |
-| done | ✓ | Terminé |
+| State | Icon | Description |
+|-------|------|-------------|
+| open | ○ | New ticket, not yet assigned |
+| in-progress | ◐ | Being processed |
+| blocked | ✗ | Blocked (waiting for info, dependency) |
+| done | ✓ | Completed |
 
-## Stockage
+## Storage
 
-Les tickets sont stockés en JSON dans `tickets/`:
+Tickets are stored as JSON in `tickets/`:
 
 ```
 tickets-cli/
@@ -149,7 +149,7 @@ tickets-cli/
     └── def67890.json
 ```
 
-Format d'un ticket:
+Ticket format:
 
 ```json
 {
@@ -175,22 +175,22 @@ Format d'un ticket:
 }
 ```
 
-## Intégration avec claude-cli
+## Integration with claude-cli
 
-Workflow typique:
+Typical workflow:
 
 ```bash
-# 1. Prophet crée un ticket
+# 1. Prophet creates a ticket
 ./tickets create "Implement feature X" --body "Details..."
 
-# 2. Prophet assigne et spawn le worker
+# 2. Prophet assigns and spawns the worker
 ./tickets assign abc123 feature-worker
 ./claude spawn --name feature-worker --role worker "Implement feature X"
 
-# 3. Prophet vérifie le status
+# 3. Prophet checks the status
 ./tickets list
 ./tickets show abc123
 
-# 4. Worker marque comme terminé
+# 4. Worker marks as done
 ./tickets update abc123 --status done
 ```

@@ -2,7 +2,7 @@
 
 **Epic:** Multi-Agent Orchestration
 **Priority:** Must Have
-**Story Points:** 13 (à décomposer en sous-stories)
+**Story Points:** 13 (to be broken down into sub-stories)
 **Status:** Not Started
 **Assigned To:** Unassigned
 **Created:** 2025-01-28
@@ -12,22 +12,22 @@
 
 ## User Story
 
-As a **développeur solo**
-I want to **orchestrer plusieurs instances Claude via tmux**
-So that **je puisse déléguer des tâches à des workers Claude spécialisés et multiplier ma productivité**
+As a **solo developer**
+I want to **orchestrate multiple Claude instances via tmux**
+So that **I can delegate tasks to specialized Claude workers and multiply my productivity**
 
 ---
 
 ## Description
 
 ### Background
-Le tutoriel de @claudecodeonly (6h sur Twitch) démontre un pattern avancé d'orchestration multi-agents Claude. Le système permet à un "Prophet Claude" principal de déléguer des tâches à des workers Claude isolés dans des sessions tmux, créant un flux de travail parallèle et asynchrone.
+The tutorial by @claudecodeonly (6h on Twitch) demonstrates an advanced multi-agent Claude orchestration pattern. The system allows a main "Prophet Claude" to delegate tasks to isolated Claude workers in tmux sessions, creating a parallel and asynchronous workflow.
 
-### Architecture Cible
+### Target Architecture
 
 ```
                     ┌─────────────────┐
-                    │  Prophet Claude │ ← Interface humaine
+                    │  Prophet Claude │ ← Human interface
                     │   (Principal)   │
                     └────────┬────────┘
                              │
@@ -40,28 +40,28 @@ Le tutoriel de @claudecodeonly (6h sur Twitch) démontre un pattern avancé d'or
         └──────────┘  └──────────┘  └──────────┘
 ```
 
-### Composants Principaux
+### Main Components
 
-1. **claude-cli** - CLI Python pour spawner/gérer les workers
-   - `spawn` : Créer un worker dans une session tmux
-   - `capture` : Capturer la sortie d'un worker
-   - `list` : Lister les workers actifs
-   - `kill` / `kill-all` : Terminer les workers
+1. **claude-cli** - Python CLI to spawn/manage workers
+   - `spawn`: Create a worker in a tmux session
+   - `capture`: Capture a worker's output
+   - `list`: List active workers
+   - `kill` / `kill-all`: Terminate workers
 
-2. **context-cli** - Gestion des rôles et contextes
-   - Rôles YAML (prophet-claude.yaml, worker.yaml, manager.yaml)
-   - Directives modulaires réutilisables
-   - Génération de settings.json pour les permissions
+2. **context-cli** - Role and context management
+   - YAML roles (prophet-claude.yaml, worker.yaml, manager.yaml)
+   - Reusable modular directives
+   - settings.json generation for permissions
 
-3. **tickets-cli** - Système de tickets asynchrone
-   - Création/gestion de tickets
-   - Assignation aux workers
-   - Notifications et ACK
+3. **tickets-cli** - Asynchronous ticket system
+   - Ticket creation/management
+   - Worker assignment
+   - Notifications and ACK
 
-4. **Système de persistance**
-   - CLAUDE.md pour le contexte initial
-   - Mémoires canoniques par Claude nommé
-   - roles/ et directives/ pour la configuration
+4. **Persistence system**
+   - CLAUDE.md for initial context
+   - Canonical memories per named Claude
+   - roles/ and directives/ for configuration
 
 ---
 
@@ -69,65 +69,65 @@ Le tutoriel de @claudecodeonly (6h sur Twitch) démontre un pattern avancé d'or
 
 ### In Scope
 
-- [ ] **Phase 1 : claude-cli** (MVP)
-  - Spawn workers Claude dans tmux
-  - Capture de la sortie des workers
-  - Liste et kill des sessions
-  - Auto-exit des workers
+- [ ] **Phase 1: claude-cli** (MVP)
+  - Spawn Claude workers in tmux
+  - Capture worker output
+  - List and kill sessions
+  - Worker auto-exit
 
-- [ ] **Phase 2 : context-cli**
-  - Structure roles/ et directives/
-  - Commande `show <role>` pour afficher le contexte
-  - Génération settings.json
-  - Rôles de base : prophet-claude, worker
+- [ ] **Phase 2: context-cli**
+  - roles/ and directives/ structure
+  - `show <role>` command to display context
+  - settings.json generation
+  - Base roles: prophet-claude, worker
 
-- [ ] **Phase 3 : tickets-cli**
+- [ ] **Phase 3: tickets-cli**
   - CRUD tickets
-  - Assignation workers
-  - États : open, in-progress, blocked, done
+  - Worker assignment
+  - States: open, in-progress, blocked, done
 
-- [ ] **Phase 4 : Intégration**
-  - Scripts de démarrage (restart-claude.sh)
-  - Workflow Prophet → Worker
-  - Documentation complète
+- [ ] **Phase 4: Integration**
+  - Startup scripts (restart-claude.sh)
+  - Prophet → Worker workflow
+  - Complete documentation
 
 ### Out of Scope (v1)
 
 - Voice control (FastAPI + Whisper)
-- Streaming Twitch
-- Git worktrees pour isolation
-- Managers avancés (middle-manager, stream-manager)
+- Twitch streaming
+- Git worktrees for isolation
+- Advanced managers (middle-manager, stream-manager)
 
 ---
 
 ## User Flow
 
-### Flow Principal
+### Main Flow
 
-1. Développeur lance Prophet Claude avec `./restart-prophet-claude.sh`
-2. Prophet Claude reçoit une tâche complexe
-3. Prophet délègue via `claude-cli spawn --role worker "Implémenter X"`
-4. Worker s'exécute de manière autonome dans sa session tmux
-5. Prophet vérifie la progression via `claude-cli capture <worker>`
-6. Worker termine et sort automatiquement (auto-exit)
-7. Prophet intègre le résultat et continue
+1. Developer launches Prophet Claude with `./restart-prophet-claude.sh`
+2. Prophet Claude receives a complex task
+3. Prophet delegates via `claude-cli spawn --role worker "Implement X"`
+4. Worker executes autonomously in its tmux session
+5. Prophet checks progress via `claude-cli capture <worker>`
+6. Worker finishes and exits automatically (auto-exit)
+7. Prophet integrates the result and continues
 
-### Exemple Concret
+### Concrete Example
 
 ```bash
-# Prophet reçoit : "Ajoute un système d'authentification"
+# Prophet receives: "Add an authentication system"
 
-# Prophet délègue :
+# Prophet delegates:
 claude-cli spawn --role worker --name auth-worker \
-  "Implémente l'authentification JWT dans /src/auth.
-   Crée les endpoints login/logout/refresh."
+  "Implement JWT authentication in /src/auth.
+   Create login/logout/refresh endpoints."
 
-# Prophet continue sur autre chose...
+# Prophet continues with something else...
 
-# Plus tard, Prophet vérifie :
+# Later, Prophet checks:
 claude-cli capture auth-worker --lines 50
 
-# Si terminé, Prophet intègre le travail
+# If done, Prophet integrates the work
 ```
 
 ---
@@ -136,54 +136,54 @@ claude-cli capture auth-worker --lines 50
 
 ### claude-cli
 
-- [ ] `spawn` crée une session tmux avec Claude en mode interactif
-- [ ] `spawn --role <role>` applique le contexte du rôle
-- [ ] `spawn --name <name>` permet de nommer la session
-- [ ] `capture <session> --lines N` affiche les N dernières lignes
-- [ ] `list` affiche toutes les sessions claude-* actives
-- [ ] `kill <session>` termine proprement une session
-- [ ] `kill-all` termine toutes les sessions claude-*
-- [ ] Les workers peuvent auto-exit avec `/exit`
-- [ ] Les prompts sont envoyés via `tmux send-keys`
+- [ ] `spawn` creates a tmux session with Claude in interactive mode
+- [ ] `spawn --role <role>` applies the role context
+- [ ] `spawn --name <name>` allows naming the session
+- [ ] `capture <session> --lines N` displays the last N lines
+- [ ] `list` displays all active claude-* sessions
+- [ ] `kill <session>` properly terminates a session
+- [ ] `kill-all` terminates all claude-* sessions
+- [ ] Workers can auto-exit with `/exit`
+- [ ] Prompts are sent via `tmux send-keys`
 
 ### context-cli
 
-- [ ] Structure `roles/*.yaml` et `directives/*.yaml`
-- [ ] `show <role>` combine le prompt + directives
-- [ ] `list-roles` affiche les rôles disponibles
-- [ ] `list-directives` affiche les directives
-- [ ] `settings <role>` génère un settings.json valide
-- [ ] Rôle `prophet-claude` défini avec contraintes
-- [ ] Rôle `worker` défini pour les tâches déléguées
+- [ ] `roles/*.yaml` and `directives/*.yaml` structure
+- [ ] `show <role>` combines prompt + directives
+- [ ] `list-roles` displays available roles
+- [ ] `list-directives` displays directives
+- [ ] `settings <role>` generates a valid settings.json
+- [ ] `prophet-claude` role defined with constraints
+- [ ] `worker` role defined for delegated tasks
 
 ### tickets-cli
 
-- [ ] `create <title> --body <description>` crée un ticket
-- [ ] `list` affiche les tickets avec leur état
-- [ ] `show <ticket-id>` affiche le détail
-- [ ] `assign <ticket-id> <worker>` assigne un worker
-- [ ] `update <ticket-id> --status <status>` change l'état
-- [ ] États supportés : open, in-progress, blocked, done
+- [ ] `create <title> --body <description>` creates a ticket
+- [ ] `list` displays tickets with their state
+- [ ] `show <ticket-id>` displays details
+- [ ] `assign <ticket-id> <worker>` assigns a worker
+- [ ] `update <ticket-id> --status <status>` changes state
+- [ ] Supported states: open, in-progress, blocked, done
 
-### Intégration
+### Integration
 
-- [ ] Script `restart-prophet-claude.sh` fonctionnel
-- [ ] Prophet Claude peut spawner des workers
-- [ ] Workers reçoivent le bon contexte via `--role`
-- [ ] Documentation README pour chaque CLI
+- [ ] `restart-prophet-claude.sh` script functional
+- [ ] Prophet Claude can spawn workers
+- [ ] Workers receive proper context via `--role`
+- [ ] README documentation for each CLI
 
 ---
 
 ## Technical Notes
 
-### Stack Technique
+### Tech Stack
 
-- **Python 3.11+** avec **uv** pour la gestion des dépendances
-- **Click** pour les CLIs
-- **tmux** pour l'isolation des sessions
-- **YAML** pour la configuration des rôles
+- **Python 3.11+** with **uv** for dependency management
+- **Click** for CLIs
+- **tmux** for session isolation
+- **YAML** for role configuration
 
-### Structure des Dossiers
+### Folder Structure
 
 ```
 bootstrap/
@@ -204,33 +204,33 @@ bootstrap/
 ├── tickets-cli/
 │   ├── pyproject.toml
 │   ├── main.py
-│   ├── tickets/          # Stockage JSON/YAML
+│   ├── tickets/          # JSON/YAML storage
 │   └── README.md
-├── CLAUDE.md             # Contexte Prophet (peut être vide si context-cli)
+├── CLAUDE.md             # Prophet context (can be empty if using context-cli)
 ├── restart-prophet-claude.sh
-└── memories/             # Mémoires persistantes par Claude
+└── memories/             # Persistent memories per Claude
 ```
 
-### Commandes tmux Clés
+### Key tmux Commands
 
 ```bash
-# Créer session
+# Create session
 tmux new-session -d -s <name> "claude"
 
-# Envoyer prompt
+# Send prompt
 tmux send-keys -t <name> "prompt text" Enter
 
-# Capturer sortie
+# Capture output
 tmux capture-pane -t <name> -p | tail -n 50
 
-# Lister sessions
+# List sessions
 tmux list-sessions | grep "^claude-"
 
-# Tuer session
+# Kill session
 tmux kill-session -t <name>
 ```
 
-### Format Rôle YAML
+### YAML Role Format
 
 ```yaml
 # roles/worker.yaml
@@ -249,25 +249,25 @@ directives:
   - code-quality
 ```
 
-### Sécurité
+### Security
 
-- Ne jamais exposer les clés API dans les logs
-- Isoler chaque worker dans sa propre session tmux
-- Permissions restrictives via settings.json
-- Rate limiting pour éviter les spawns excessifs
+- Never expose API keys in logs
+- Isolate each worker in its own tmux session
+- Restrictive permissions via settings.json
+- Rate limiting to avoid excessive spawns
 
 ---
 
 ## Dependencies
 
-### Prérequis Système
+### System Prerequisites
 
-- tmux installé et configuré
-- Python 3.11+ avec uv
-- Claude Code CLI installé et configuré
-- Compte Claude avec crédits suffisants
+- tmux installed and configured
+- Python 3.11+ with uv
+- Claude Code CLI installed and configured
+- Claude account with sufficient credits
 
-### Dépendances Python
+### Python Dependencies
 
 ```toml
 [dependencies]
@@ -275,51 +275,51 @@ click = "^8.1"
 pyyaml = "^6.0"
 ```
 
-### Ordre d'Implémentation
+### Implementation Order
 
-1. **claude-cli** (aucune dépendance)
-2. **context-cli** (aucune dépendance)
-3. **tickets-cli** (optionnel, peut utiliser context-cli pour les rôles)
-4. **Intégration** (dépend des 3 CLIs)
+1. **claude-cli** (no dependencies)
+2. **context-cli** (no dependencies)
+3. **tickets-cli** (optional, can use context-cli for roles)
+4. **Integration** (depends on the 3 CLIs)
 
 ---
 
 ## Definition of Done
 
-- [ ] Code implémenté et commité
-- [ ] Tests manuels passés pour chaque commande
-- [ ] README documenté pour chaque CLI
-- [ ] Workflow complet testé : Prophet → spawn → capture → intégration
-- [ ] Au moins 2 rôles définis (prophet-claude, worker)
-- [ ] Script restart-prophet-claude.sh fonctionnel
-- [ ] Pas d'erreurs lors de l'exécution normale
+- [ ] Code implemented and committed
+- [ ] Manual tests passed for each command
+- [ ] README documented for each CLI
+- [ ] Complete workflow tested: Prophet → spawn → capture → integration
+- [ ] At least 2 roles defined (prophet-claude, worker)
+- [ ] restart-prophet-claude.sh script functional
+- [ ] No errors during normal execution
 
 ---
 
 ## Story Points Breakdown
 
-| Composant | Points | Complexité |
+| Component | Points | Complexity |
 |-----------|--------|------------|
-| claude-cli | 5 | Moyenne - tmux + Click |
+| claude-cli | 5 | Medium - tmux + Click |
 | context-cli | 3 | Simple - YAML + templating |
-| tickets-cli | 3 | Simple - CRUD basique |
-| Intégration | 2 | Simple - scripts shell |
+| tickets-cli | 3 | Simple - Basic CRUD |
+| Integration | 2 | Simple - shell scripts |
 | **Total** | **13** | |
 
-**Rationale:** Le système complet est trop gros pour une seule story. Recommandation : décomposer en 4 sous-stories (une par composant).
+**Rationale:** The complete system is too large for a single story. Recommendation: break down into 4 sub-stories (one per component).
 
 ---
 
-## Sous-Stories
+## Sub-Stories
 
-| ID | Titre | Points | Priorité | Dépendances |
-|----|-------|--------|----------|-------------|
-| [STORY-001a](STORY-001a.md) | Implémenter claude-cli | 5 | Must Have | - |
-| [STORY-001b](STORY-001b.md) | Implémenter context-cli | 3 | Should Have | 001a |
-| [STORY-001c](STORY-001c.md) | Implémenter tickets-cli | 3 | Could Have | 001a |
-| [STORY-001d](STORY-001d.md) | Intégration et documentation | 2 | Must Have | 001a, 001b |
+| ID | Title | Points | Priority | Dependencies |
+|----|-------|--------|----------|--------------|
+| [STORY-001a](STORY-001a.md) | Implement claude-cli | 5 | Must Have | - |
+| [STORY-001b](STORY-001b.md) | Implement context-cli | 3 | Should Have | 001a |
+| [STORY-001c](STORY-001c.md) | Implement tickets-cli | 3 | Could Have | 001a |
+| [STORY-001d](STORY-001d.md) | Integration and documentation | 2 | Must Have | 001a, 001b |
 
-### Ordre d'implémentation recommandé
+### Recommended Implementation Order
 
 ```
 STORY-001a (claude-cli)     ──────┐
@@ -329,26 +329,26 @@ STORY-001b (context-cli)    STORY-001c (tickets-cli)
          │                        │
          └────────┬───────────────┘
                   ▼
-         STORY-001d (intégration)
+         STORY-001d (integration)
 ```
 
 ---
 
-## Ressources
+## Resources
 
-- **Tutoriel extrait** : `tutorial.md` (488 Ko, 362 frames analysées)
-- **Vidéo source** : https://www.twitch.tv/claudecodeonly/video/2657952550
-- **Frames** : `/tmp/claude/.../twitch_frames/frames/` (4344 images)
+- **Extracted tutorial**: `tutorial.md` (488 KB, 362 frames analyzed)
+- **Source video**: https://www.twitch.tv/claudecodeonly/video/2657952550
+- **Frames**: `/tmp/claude/.../twitch_frames/frames/` (4344 images)
 
 ---
 
 ## Progress Tracking
 
 **Status History:**
-- 2025-01-28: Story créée
+- 2025-01-28: Story created
 
 **Actual Effort:** TBD
 
 ---
 
-**Cette story a été créée en suivant le tutoriel Multi-Claude Bootstrap de @claudecodeonly**
+**This story was created following the Multi-Claude Bootstrap tutorial by @claudecodeonly**
