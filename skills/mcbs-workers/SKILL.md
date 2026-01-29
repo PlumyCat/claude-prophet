@@ -6,35 +6,35 @@ allowed-tools: Bash
 
 # Workers Management
 
-Liste et gère les workers Claude actifs.
+Lists and manages active Claude workers.
 
-## Commandes
+## Commands
 
-### Lister les workers actifs
+### List active workers
 ```bash
-/home/eric/projects/twich-test/claude list
+./claude list
 ```
 
-### Voir toutes les sessions tmux
+### View all tmux sessions
 ```bash
-tmux list-sessions 2>/dev/null || echo "Aucune session tmux active"
+tmux list-sessions 2>/dev/null || echo "No active tmux sessions"
 ```
 
-## Format de sortie
+## Output Format
 
-Pour chaque worker, afficher :
-- Nom de la session
+For each worker, display:
+- Session name
 - Status (running/stopped)
-- Durée d'activité
+- Activity duration
 
-## Actions rapides
+## Quick Actions
 
-1. Capturer la sortie : `/capture <name>`
-2. Tuer un worker : `/kill <name>`
-3. Tuer tous : `./claude kill-all`
-4. Nouveau worker : `/spawn`
+1. Capture output: `/capture <name>`
+2. Kill a worker: `/kill <name>`
+3. Kill all: `./claude kill-all`
+4. New worker: `/spawn`
 
 ## Notes
 
-- Sessions Claude préfixées avec `claude-` sauf si nommées explicitement
-- Prophet Claude : session `prophet-claude`
+- Claude sessions prefixed with `claude-` unless explicitly named
+- Prophet Claude: `prophet-claude` session

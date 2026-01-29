@@ -6,58 +6,58 @@ allowed-tools: Bash
 
 # Ticket Management
 
-Gestion des tickets pour tracker les tâches déléguées.
+Ticket management for tracking delegated tasks.
 
-## Actions disponibles
+## Available Actions
 
-### 1. Créer un ticket
+### 1. Create a ticket
 ```bash
-/home/eric/projects/twich-test/tickets create "<title>" --body "<description>"
-# Avec assignation :
-/home/eric/projects/twich-test/tickets create "<title>" --assign <worker-name>
+./tickets create "<title>" --body "<description>"
+# With assignment:
+./tickets create "<title>" --assign <worker-name>
 ```
 
-### 2. Lister les tickets
+### 2. List tickets
 ```bash
-/home/eric/projects/twich-test/tickets list
-# Filtrer :
-/home/eric/projects/twich-test/tickets list --status open
-/home/eric/projects/twich-test/tickets list --status in-progress
-/home/eric/projects/twich-test/tickets list --status blocked
-/home/eric/projects/twich-test/tickets list --status done
+./tickets list
+# Filter:
+./tickets list --status open
+./tickets list --status in-progress
+./tickets list --status blocked
+./tickets list --status done
 ```
 
-### 3. Voir un ticket
+### 3. View a ticket
 ```bash
-/home/eric/projects/twich-test/tickets show <ticket-id>
+./tickets show <ticket-id>
 ```
 
-### 4. Assigner un worker
+### 4. Assign a worker
 ```bash
-/home/eric/projects/twich-test/tickets assign <ticket-id> <worker-name>
+./tickets assign <ticket-id> <worker-name>
 ```
 
-### 5. Mettre à jour le status
+### 5. Update status
 ```bash
-/home/eric/projects/twich-test/tickets update <ticket-id> --status done
-/home/eric/projects/twich-test/tickets update <ticket-id> --status blocked
+./tickets update <ticket-id> --status done
+./tickets update <ticket-id> --status blocked
 ```
 
-### 6. Ajouter un commentaire
+### 6. Add a comment
 ```bash
-/home/eric/projects/twich-test/tickets comment <ticket-id> "Progress update"
+./tickets comment <ticket-id> "Progress update"
 ```
 
-### 7. Statistiques
+### 7. Statistics
 ```bash
-/home/eric/projects/twich-test/tickets stats
+./tickets stats
 ```
 
-## États des tickets
+## Ticket States
 
-| État | Icône | Description |
-|------|-------|-------------|
-| open | ○ | Nouveau, pas assigné |
-| in-progress | ◐ | En cours |
-| blocked | ✗ | Bloqué |
-| done | ✓ | Terminé |
+| State | Icon | Description |
+|-------|------|-------------|
+| open | ○ | New, not assigned |
+| in-progress | ◐ | In progress |
+| blocked | ✗ | Blocked |
+| done | ✓ | Completed |

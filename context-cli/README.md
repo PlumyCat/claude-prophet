@@ -1,6 +1,6 @@
 # context-cli
 
-CLI pour gérer les rôles et directives des workers Claude.
+CLI for managing Claude worker roles and directives.
 
 ## Installation
 
@@ -22,11 +22,11 @@ context-cli/
 └── main.py
 ```
 
-## Commandes
+## Commands
 
 ### list-roles
 
-Liste les rôles disponibles.
+Lists available roles.
 
 ```bash
 uv run python main.py list-roles
@@ -34,7 +34,7 @@ uv run python main.py list-roles
 
 ### list-directives
 
-Liste les directives disponibles.
+Lists available directives.
 
 ```bash
 uv run python main.py list-directives
@@ -42,7 +42,7 @@ uv run python main.py list-directives
 
 ### show
 
-Affiche le contexte complet d'un rôle (prompt + directives).
+Displays the complete context for a role (prompt + directives).
 
 ```bash
 uv run python main.py show worker
@@ -51,27 +51,27 @@ uv run python main.py show prophet-claude
 
 ### settings
 
-Génère un settings.json avec les permissions du rôle.
+Generates a settings.json with the role's permissions.
 
 ```bash
-# Afficher sur stdout
+# Display to stdout
 uv run python main.py settings prophet-claude
 
-# Sauvegarder dans un fichier
+# Save to a file
 uv run python main.py settings prophet-claude -o settings.json
 ```
 
 ### validate
 
-Valide la configuration d'un rôle.
+Validates a role's configuration.
 
 ```bash
 uv run python main.py validate worker
 ```
 
-## Format des fichiers
+## File Formats
 
-### Rôle (roles/*.yaml)
+### Role (roles/*.yaml)
 
 ```yaml
 name: worker
@@ -102,10 +102,10 @@ content: |
   Your directive content here...
 ```
 
-## Intégration avec claude-cli
+## Integration with claude-cli
 
 ```bash
-# Le flag --role charge le contexte depuis context-cli
+# The --role flag loads context from context-cli
 cd ../claude-cli
 uv run python main.py spawn --role worker "Implement feature X"
 ```

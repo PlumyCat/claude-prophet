@@ -1,96 +1,96 @@
 # Twitch Tutorial Extractor
 
-Projet d'extraction de tutoriels vidéo Twitch (sans audio) en documentation textuelle.
+Project for extracting Twitch video tutorials (without audio) into text documentation.
 
-## Contexte
+## Context
 
-Ce projet extrait le contenu de vidéos tutorielles en utilisant:
-1. **ffmpeg** pour extraire les frames de la vidéo
-2. **Azure OpenAI GPT-4.1-mini** (vision) pour analyser les frames et extraire le texte
+This project extracts content from video tutorials using:
+1. **ffmpeg** to extract frames from the video
+2. **Azure OpenAI GPT-4.1-mini** (vision) to analyze frames and extract text
 
-## Source vidéo
+## Video Source
 
-Tutoriel Twitch de @claudecodeonly sur la création d'un système **Multi-Claude Bootstrap**:
+Twitch tutorial by @claudecodeonly on creating a **Multi-Claude Bootstrap** system:
 - URL: https://www.twitch.tv/claudecodeonly/video/2657952550
-- Durée: ~6 heures
-- Contenu: Système d'orchestration multi-agents Claude avec tmux
+- Duration: ~6 hours
+- Content: Multi-agent Claude orchestration system with tmux
 
 ## Structure
 
 ```
 twich-test/
-├── .env                    # Credentials Azure (NE PAS COMMITER)
+├── .env                    # Azure credentials (DO NOT COMMIT)
 ├── .gitignore
 ├── requirements.txt
-├── extract_frames.py       # Script principal d'extraction
-├── CLAUDE.md              # Ce fichier
-└── output/                # Résultats d'extraction (généré)
+├── extract_frames.py       # Main extraction script
+├── CLAUDE.md              # This file
+└── output/                # Extraction results (generated)
 ```
 
-## Utilisation
+## Usage
 
-### 1. Télécharger la vidéo et extraire les frames
+### 1. Download the video and extract frames
 
 ```bash
-# Télécharger
+# Download
 yt-dlp -o video.mp4 "https://www.twitch.tv/claudecodeonly/video/2657952550"
 
-# Extraire frames (1 toutes les 5 secondes)
+# Extract frames (1 every 5 seconds)
 mkdir -p frames
 ffmpeg -i video.mp4 -vf "fps=1/5" -q:v 2 frames/frame_%05d.jpg
 ```
 
-### 2. Extraire le contenu avec Azure
+### 2. Extract content with Azure
 
 ```bash
-# Installer les dépendances
+# Install dependencies
 pip install -r requirements.txt
 
-# Extraire (1 frame par minute par défaut)
+# Extract (1 frame per minute by default)
 python extract_frames.py --frames-dir ./frames --output tutorial.md
 
 # Options
 python extract_frames.py \
   --frames-dir ./frames \
   --output tutorial.md \
-  --sample-rate 6 \        # 1 frame toutes les 30 sec
-  --start-frame 100 \      # Commencer à la frame 100
-  --end-frame 500          # Finir à la frame 500
+  --sample-rate 6 \        # 1 frame every 30 sec
+  --start-frame 100 \      # Start at frame 100
+  --end-frame 500          # End at frame 500
 ```
 
-## Configuration Azure
+## Azure Configuration
 
-Le fichier `.env` contient:
-- `AZURE_OPENAI_ENDPOINT`: Endpoint Azure Foundry
-- `AZURE_OPENAI_API_KEY`: Clé API
-- `AZURE_OPENAI_DEPLOYMENT`: Nom du déploiement (gpt-4.1-mini)
+The `.env` file contains:
+- `AZURE_OPENAI_ENDPOINT`: Azure Foundry endpoint
+- `AZURE_OPENAI_API_KEY`: API key
+- `AZURE_OPENAI_DEPLOYMENT`: Deployment name (gpt-4.1-mini)
 
-## Contenu du tutoriel (résumé préliminaire)
+## Tutorial Content (preliminary summary)
 
-Le tutoriel couvre la création d'un système multi-agents Claude:
+The tutorial covers creating a multi-agent Claude system:
 
 ### Architecture
-- **Prophet Claude**: Orchestrateur principal, interface humaine
-- **Workers**: Agents délégués dans des sessions tmux séparées
-- **Managers**: Middle-manager, stream-manager pour la coordination
+- **Prophet Claude**: Main orchestrator, human interface
+- **Workers**: Delegated agents in separate tmux sessions
+- **Managers**: Middle-manager, stream-manager for coordination
 
-### Composants
-- `claude-cli`: CLI Python pour spawner/gérer les workers
-- `context-cli`: Gestion des rôles et directives
-- `tickets-cli`: Système de tickets pour tracker les tâches
+### Components
+- `claude-cli`: Python CLI to spawn/manage workers
+- `context-cli`: Role and directive management
+- `tickets-cli`: Ticket system for task tracking
 
-### Concepts clés
-- Sessions tmux pour isoler les workers
-- CLAUDE.md pour la persistance du contexte
-- Rôles YAML (prophet-claude.yaml, worker.yaml)
-- Directives modulaires réutilisables
-- Named Claudes avec mémoires canoniques
+### Key Concepts
+- Tmux sessions to isolate workers
+- CLAUDE.md for context persistence
+- YAML roles (prophet-claude.yaml, worker.yaml)
+- Reusable modular directives
+- Named Claudes with canonical memories
 
-## Frames source
+## Source Frames
 
-Les frames extraites sont stockées dans:
+Extracted frames are stored in:
 ```
 /tmp/claude/-home-eric-cc-config/07a4be6d-7f6d-4615-9097-be0ecb6f02c7/scratchpad/twitch_frames/frames/
 ```
 
-Total: 4344 frames (~6h de vidéo à 5 sec d'intervalle)
+Total: 4344 frames (~6h of video at 5 sec intervals)

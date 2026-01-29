@@ -6,69 +6,69 @@ allowed-tools: Bash
 
 # Spawn Worker
 
-Crée un nouveau worker Claude dans une session tmux isolée.
+Creates a new Claude worker in an isolated tmux session.
 
-## Paramètres à collecter
+## Parameters to Collect
 
-1. **Nom** (optionnel) : Nom descriptif pour le worker
-2. **Rôle** (optionnel) : Contexte prédéfini (`worker`, `prophet-claude`)
-3. **Ticket** (optionnel) : ID du ticket à associer
-4. **Skill** (optionnel) : Skills à activer au démarrage (répétable)
-5. **Tâche** (requis) : Le prompt/instruction pour le worker
+1. **Name** (optional): Descriptive name for the worker
+2. **Role** (optional): Predefined context (`worker`, `prophet-claude`)
+3. **Ticket** (optional): Ticket ID to associate
+4. **Skill** (optional): Skills to activate at startup (repeatable)
+5. **Task** (required): The prompt/instruction for the worker
 
-## Commandes
-
-```bash
-# Basique
-/home/eric/projects/twich-test/claude spawn --name <name> "<task>"
-
-# Avec rôle (recommandé)
-/home/eric/projects/twich-test/claude spawn --name <name> --role worker "<task>"
-
-# Avec ticket (recommandé pour tracking)
-/home/eric/projects/twich-test/claude spawn --name <name> --role worker --ticket <ticket-id> "<task>"
-
-# Avec skills (pour autonomie)
-/home/eric/projects/twich-test/claude spawn --skill ralph-loop:ralph-loop "<task>"
-
-# Combiner plusieurs skills
-/home/eric/projects/twich-test/claude spawn -s bmad:dev-story -s ralph-loop:ralph-loop "<task>"
-```
-
-## Mode Ralph Loop (--ralph)
-
-Pour une exécution autonome sans intervention :
+## Commands
 
 ```bash
-/home/eric/projects/twich-test/claude spawn --ralph "Tâche longue à exécuter"
-/home/eric/projects/twich-test/claude spawn --ralph --role worker --ticket abc123 "Feature complète"
+# Basic
+./claude spawn --name <name> "<task>"
+
+# With role (recommended)
+./claude spawn --name <name> --role worker "<task>"
+
+# With ticket (recommended for tracking)
+./claude spawn --name <name> --role worker --ticket <ticket-id> "<task>"
+
+# With skills (for autonomy)
+./claude spawn --skill ralph-loop:ralph-loop "<task>"
+
+# Combine multiple skills
+./claude spawn -s bmad:dev-story -s ralph-loop:ralph-loop "<task>"
 ```
 
-Note: Éviter les parenthèses `()` dans le prompt avec --ralph (problème d'échappement bash).
+## Ralph Loop Mode (--ralph)
 
-## Skills utiles pour workers
+For autonomous execution without intervention:
 
-| Skill | Effet |
-|-------|-------|
-| `ralph-loop:ralph-loop` | Continue automatiquement sans attendre |
-| `bmad:dev-story` | Workflow développement structuré |
+```bash
+./claude spawn --ralph "Long running task"
+./claude spawn --ralph --role worker --ticket abc123 "Complete feature"
+```
+
+Note: Avoid parentheses `()` in the prompt with --ralph (bash escaping issue).
+
+## Useful Skills for Workers
+
+| Skill | Effect |
+|-------|--------|
+| `ralph-loop:ralph-loop` | Continues automatically without waiting |
+| `bmad:dev-story` | Structured development workflow |
 | `epct` | Explore-Plan-Code-Test workflow |
 
-## Workflow recommandé
+## Recommended Workflow
 
 ```bash
-# 1. Créer le ticket
-/home/eric/projects/twich-test/tickets create "<task-title>"
+# 1. Create the ticket
+./tickets create "<task-title>"
 
-# 2. Spawner avec le ticket
-/home/eric/projects/twich-test/claude spawn --name my-worker --role worker --ticket abc123 "<task>"
+# 2. Spawn with the ticket
+./claude spawn --name my-worker --role worker --ticket abc123 "<task>"
 
-# 3. Vérifier
-/home/eric/projects/twich-test/claude list
+# 3. Verify
+./claude list
 ```
 
 ## Notes
 
-- Workers lancés avec `--dangerously-skip-permissions` pour l'autonomie
-- Le rôle `worker` inclut instructions de fin (update ticket + /exit)
-- Utiliser des noms descriptifs et instructions claires
+- Workers launched with `--dangerously-skip-permissions` for autonomy
+- The `worker` role includes end instructions (update ticket + /exit)
+- Use descriptive names and clear instructions

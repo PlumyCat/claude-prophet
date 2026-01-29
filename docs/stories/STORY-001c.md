@@ -1,4 +1,4 @@
-# STORY-001c: Implémenter tickets-cli
+# STORY-001c: Implement tickets-cli
 
 **Epic:** Multi-Agent Orchestration
 **Priority:** Could Have
@@ -14,30 +14,30 @@
 
 ## User Story
 
-As a **développeur solo**
-I want to **tracker les tâches déléguées aux workers via un système de tickets**
-So that **je puisse suivre l'avancement et coordonner le travail asynchrone**
+As a **solo developer**
+I want to **track tasks delegated to workers via a ticket system**
+So that **I can follow progress and coordinate asynchronous work**
 
 ---
 
 ## Description
 
 ### Background
-Le tickets-cli permet de gérer les tâches de manière asynchrone. Quand Prophet Claude délègue une tâche, il crée un ticket. Le worker est assigné au ticket et met à jour son état. Cela permet de tracker le travail en cours, les blocages, et l'historique.
+The tickets-cli allows managing tasks asynchronously. When Prophet Claude delegates a task, it creates a ticket. The worker is assigned to the ticket and updates its state. This allows tracking work in progress, blockers, and history.
 
 ### Workflow
 
 ```
 Prophet                          Worker
    │                                │
-   ├─► tickets create "Auth JWT"    │
+   ├─► tickets create "JWT Auth"    │
    │   └─► Ticket #abc123 created   │
    │                                │
    ├─► tickets assign abc123 auth-worker
    │                                │
    ├─► claude spawn --name auth-worker "..."
    │                                │
-   │                                ├─► (travaille...)
+   │                                ├─► (working...)
    │                                │
    ├─► tickets show abc123          │
    │   └─► Status: in-progress      │
@@ -55,78 +55,78 @@ Prophet                          Worker
 ### In Scope
 
 - CRUD tickets (create, list, show, update)
-- Assignation de workers
-- États : open, in-progress, blocked, done
-- Stockage JSON simple (un fichier par ticket)
-- Historique des changements d'état
+- Worker assignment
+- States: open, in-progress, blocked, done
+- Simple JSON storage (one file per ticket)
+- State change history
 
 ### Out of Scope
 
-- Notifications/pings entre Claudes
-- Abonnements aux tickets
+- Notifications/pings between Claudes
+- Ticket subscriptions
 - ACK system
-- Base de données (on reste sur des fichiers JSON)
+- Database (sticking with JSON files)
 
 ---
 
 ## Acceptance Criteria
 
-### Commande create
+### create command
 
-- [ ] `tickets create "Title"` crée un ticket avec ID auto-généré
-- [ ] `tickets create "Title" --body "Description"` ajoute une description
-- [ ] Retourne l'ID du ticket créé
-- [ ] État initial : open
+- [ ] `tickets create "Title"` creates a ticket with auto-generated ID
+- [ ] `tickets create "Title" --body "Description"` adds a description
+- [ ] Returns the created ticket ID
+- [ ] Initial state: open
 
-### Commande list
+### list command
 
-- [ ] `tickets list` affiche tous les tickets
-- [ ] Format : ID, titre, état, assigné à
-- [ ] `tickets list --status open` filtre par état
-- [ ] Affiche "No tickets" si vide
+- [ ] `tickets list` displays all tickets
+- [ ] Format: ID, title, state, assigned to
+- [ ] `tickets list --status open` filters by state
+- [ ] Displays "No tickets" if empty
 
-### Commande show
+### show command
 
-- [ ] `tickets show <id>` affiche le détail complet
-- [ ] Inclut : titre, description, état, assigné, historique
-- [ ] Erreur claire si ticket inexistant
+- [ ] `tickets show <id>` displays full details
+- [ ] Includes: title, description, state, assigned, history
+- [ ] Clear error if ticket doesn't exist
 
-### Commande update
+### update command
 
-- [ ] `tickets update <id> --status <status>` change l'état
-- [ ] États valides : open, in-progress, blocked, done
-- [ ] Ajoute une entrée à l'historique
-- [ ] Erreur si état invalide
+- [ ] `tickets update <id> --status <status>` changes state
+- [ ] Valid states: open, in-progress, blocked, done
+- [ ] Adds an entry to history
+- [ ] Error if invalid state
 
-### Commande assign
+### assign command
 
-- [ ] `tickets assign <id> <worker>` assigne un worker
-- [ ] Met à jour le champ "assigned_to"
-- [ ] Passe automatiquement en "in-progress" si état était "open"
+- [ ] `tickets assign <id> <worker>` assigns a worker
+- [ ] Updates the "assigned_to" field
+- [ ] Automatically changes to "in-progress" if state was "open"
 
-### Stockage
+### Storage
 
-- [ ] Dossier `tickets/` créé automatiquement
-- [ ] Un fichier JSON par ticket : `tickets/<id>.json`
-- [ ] Format lisible et éditable manuellement
+- [ ] `tickets/` folder created automatically
+- [ ] One JSON file per ticket: `tickets/<id>.json`
+- [ ] Readable and manually editable format
 
 ---
 
 ## Technical Notes
 
-### Structure du Projet
+### Project Structure
 
 ```
 bootstrap/tickets-cli/
 ├── pyproject.toml
 ├── main.py
 ├── README.md
-└── tickets/              # Créé automatiquement
+└── tickets/              # Created automatically
     ├── abc123.json
     └── def456.json
 ```
 
-### Format Ticket JSON
+### Ticket JSON Format
 
 ```json
 {
@@ -317,25 +317,25 @@ if __name__ == "__main__":
 
 ## Dependencies
 
-### Prérequis
+### Prerequisites
 
 - Python 3.11+
-- uv installé
+- uv installed
 
-### Dépendances Stories
+### Story Dependencies
 
-- **STORY-001a** : claude-cli pour spawner les workers assignés
+- **STORY-001a**: claude-cli to spawn assigned workers
 
 ---
 
 ## Definition of Done
 
-- [ ] Projet créé avec `uv init`
-- [ ] 5 commandes fonctionnelles (create, list, show, update, assign)
-- [ ] Stockage JSON dans tickets/
-- [ ] Historique des changements tracké
-- [ ] README.md documenté
-- [ ] Tests manuels passés
+- [ ] Project created with `uv init`
+- [ ] 5 commands functional (create, list, show, update, assign)
+- [ ] JSON storage in tickets/
+- [ ] Change history tracked
+- [ ] README.md documented
+- [ ] Manual tests passed
 
 ---
 
@@ -369,8 +369,8 @@ uv run python main.py list --status done
 ## Progress Tracking
 
 **Status History:**
-- 2025-01-28: Story créée
+- 2025-01-28: Story created
 
 ---
 
-**Prochaine story:** STORY-001d (Intégration)
+**Next story:** STORY-001d (Integration)

@@ -42,15 +42,15 @@ def extract_frame_content(client: AzureOpenAI, image_path: Path, deployment: str
         messages=[
             {
                 "role": "system",
-                "content": """Tu es un assistant qui extrait le contenu textuel des captures d'écran d'un tutoriel vidéo sur Claude Code.
+                "content": """You are an assistant that extracts text content from screenshots of a Claude Code video tutorial.
 
-Pour chaque frame, extrais:
-1. Les commandes tapées dans le terminal
-2. Le code affiché (avec le langage si identifiable)
-3. Les messages/réponses de Claude
-4. Les instructions ou commentaires importants
+For each frame, extract:
+1. Commands typed in the terminal
+2. Code displayed (with the language if identifiable)
+3. Claude's messages/responses
+4. Important instructions or comments
 
-Format ta réponse de manière structurée et concise. Si la frame est similaire à la précédente ou ne contient rien de nouveau, réponds simplement "SKIP".
+Format your response in a structured and concise manner. If the frame is similar to the previous one or contains nothing new, simply respond "SKIP".
 """
             },
             {
@@ -58,7 +58,7 @@ Format ta réponse de manière structurée et concise. Si la frame est similaire
                 "content": [
                     {
                         "type": "text",
-                        "text": "Extrais le contenu important de cette capture d'écran de tutoriel:"
+                        "text": "Extract the important content from this tutorial screenshot:"
                     },
                     {
                         "type": "image_url",

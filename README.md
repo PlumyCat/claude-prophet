@@ -1,6 +1,6 @@
 # Claude Prophet - Multi-Claude Bootstrap System
 
-Système d'orchestration multi-agents Claude permettant de déléguer des tâches à des workers isolés dans des sessions tmux.
+Multi-agent Claude orchestration system enabling task delegation to isolated workers in tmux sessions.
 
 ## Architecture
 
@@ -11,11 +11,11 @@ Système d'orchestration multi-agents Claude permettant de déléguer des tâche
 │                       ▼                             │
 │  ┌─────────────────────────────────────────────┐    │
 │  │             PROPHET CLAUDE                  │    │
-│  │            (Orchestrateur)                  │    │
+│  │            (Orchestrator)                   │    │
 │  │                                             │    │
-│  │  • Reçoit les demandes                      │    │
-│  │  • Délègue aux workers                      │    │
-│  │  • Supervise et intègre                     │    │
+│  │  • Receives requests                        │    │
+│  │  • Delegates to workers                     │    │
+│  │  • Supervises and integrates                │    │
 │  └─────────────────────────────────────────────┘    │
 │                       │                             │
 │          ┌────────────┼────────────┐                │
@@ -30,12 +30,12 @@ Système d'orchestration multi-agents Claude permettant de déléguer des tâche
 
 ## Installation
 
-### Prérequis
+### Prerequisites
 
 - Python 3.11+
-- [uv](https://github.com/astral-sh/uv) (gestionnaire de paquets Python)
+- [uv](https://github.com/astral-sh/uv) (Python package manager)
 - tmux
-- Claude Code CLI configuré
+- Claude Code CLI configured
 
 ### Setup
 
@@ -43,71 +43,71 @@ Système d'orchestration multi-agents Claude permettant de déléguer des tâche
 git clone https://github.com/PlumyCat/claude-prophet.git
 cd claude-prophet
 
-# Installer les dépendances de chaque CLI
+# Install dependencies for each CLI
 cd claude-cli && uv sync && cd ..
 cd context-cli && uv sync && cd ..
 cd tickets-cli && uv sync && cd ..
 
-# Installer les skills Claude Code (MCBS)
+# Install Claude Code skills (MCBS)
 ./install-skills.sh
 ```
 
 ## Quick Start
 
 ```bash
-# 1. Démarrer Prophet Claude
+# 1. Start Prophet Claude
 ./restart-prophet-claude.sh
 
-# 2. Attacher la session
+# 2. Attach to the session
 tmux attach -t prophet-claude
 
-# 3. Dans Prophet Claude, déléguer une tâche
-./claude spawn --role worker --name my-task "Implémenter une fonction fibonacci"
+# 3. In Prophet Claude, delegate a task
+./claude spawn --role worker --name my-task "Implement a fibonacci function"
 
-# 4. Vérifier le worker
+# 4. Check the worker
 ./claude list
 ./claude capture my-task
 ```
 
-## Composants
+## Components
 
 ### claude-cli
 
-Gestion des workers tmux.
+Tmux worker management.
 
 ```bash
-./claude spawn "prompt"              # Spawn un worker
-./claude spawn --name foo "prompt"   # Avec un nom
-./claude spawn --role worker "prompt" # Avec un rôle
-./claude capture foo --lines 50      # Voir la sortie
-./claude list                        # Lister les workers
-./claude kill foo                    # Tuer un worker
-./claude kill-all                    # Tuer tous les workers
+./claude spawn "prompt"              # Spawn a worker
+./claude spawn --name foo "prompt"   # With a name
+./claude spawn --role worker "prompt" # With a role
+./claude capture foo --lines 50      # View output
+./claude list                        # List workers
+./claude kill foo                    # Kill a worker
+./claude kill-all                    # Kill all workers
 ```
 
 ### context-cli
 
-Gestion des rôles et directives.
+Role and directive management.
 
 ```bash
-./context list-roles        # Lister les rôles
-./context list-directives   # Lister les directives
-./context show worker       # Afficher le contexte d'un rôle
-./context settings worker   # Générer settings.json
-./context validate worker   # Valider un rôle
+./context list-roles        # List roles
+./context list-directives   # List directives
+./context show worker       # Display role context
+./context settings worker   # Generate settings.json
+./context validate worker   # Validate a role
 ```
 
 ### tickets-cli
 
-Tracking des tâches déléguées.
+Delegated task tracking.
 
 ```bash
-./tickets create "Task"      # Créer un ticket
-./tickets list               # Lister les tickets
-./tickets show abc123        # Voir un ticket
-./tickets assign abc123 worker # Assigner un worker
-./tickets update abc123 --status done # Marquer comme terminé
-./tickets stats              # Statistiques
+./tickets create "Task"      # Create a ticket
+./tickets list               # List tickets
+./tickets show abc123        # View a ticket
+./tickets assign abc123 worker # Assign a worker
+./tickets update abc123 --status done # Mark as done
+./tickets stats              # Statistics
 ```
 
 ## Structure
@@ -117,104 +117,105 @@ claude-prophet/
 ├── claude                    # Wrapper → claude-cli
 ├── context                   # Wrapper → context-cli
 ├── tickets                   # Wrapper → tickets-cli
-├── restart-prophet-claude.sh # Script de démarrage
-├── install-skills.sh         # Installe les skills MCBS
-├── claude-cli/               # CLI gestion workers
-├── context-cli/              # CLI gestion contextes
-│   ├── roles/                # Définitions des rôles
-│   └── directives/           # Directives réutilisables
-├── tickets-cli/              # CLI tracking des tâches
-│   └── tickets/              # Stockage JSON des tickets
-├── skills/mcbs/              # Skills Claude Code (MCBS)
-│   ├── prophet/              # Gestion Prophet Claude
-│   ├── spawn/                # Spawner un worker
-│   ├── workers/              # Lister les workers
-│   ├── capture/              # Capturer la sortie
-│   ├── kill/                 # Tuer les workers
-│   ├── status/               # Status système
-│   ├── ticket/               # Gestion tickets
-│   └── done/                 # Signaler fin de tâche
+├── restart-prophet-claude.sh # Startup script
+├── install-skills.sh         # Installs MCBS skills
+├── claude-cli/               # Worker management CLI
+├── context-cli/              # Context management CLI
+│   ├── roles/                # Role definitions
+│   └── directives/           # Reusable directives
+├── tickets-cli/              # Task tracking CLI
+│   └── tickets/              # JSON ticket storage
+├── skills/mcbs/              # Claude Code skills (MCBS)
+│   ├── prophet/              # Prophet Claude management
+│   ├── spawn/                # Spawn a worker
+│   ├── workers/              # List workers
+│   ├── capture/              # Capture output
+│   ├── kill/                 # Kill workers
+│   ├── status/               # System status
+│   ├── ticket/               # Ticket management
+│   └── done/                 # Signal task completion
 └── docs/
-    ├── GUIDE.md              # Guide d'utilisation complet
+    ├── GUIDE.md              # Complete usage guide
     └── stories/              # User stories
 ```
 
-## Skills Claude Code (MCBS)
+## Claude Code Skills (MCBS)
 
-Skills globaux disponibles depuis n'importe quel projet (`~/.claude/skills/mcbs/`).
+Global skills available from any project (`~/.claude/skills/mcbs/`).
 
 | Skill | Description |
 |-------|-------------|
-| `/mcbs:prophet` | (Re)lancer Prophet Claude dans tmux |
-| `/mcbs:spawn` | Créer un worker avec options |
-| `/mcbs:workers` | Lister les workers actifs |
-| `/mcbs:capture` | Voir la sortie d'un worker |
-| `/mcbs:kill` | Tuer un/tous les workers |
-| `/mcbs:status` | Vue d'ensemble système |
-| `/mcbs:ticket` | Gestion des tickets |
-| `/mcbs:done` | Signaler fin de tâche (workers) |
+| `/mcbs:prophet` | (Re)launch Prophet Claude in tmux |
+| `/mcbs:spawn` | Create a worker with options |
+| `/mcbs:workers` | List active workers |
+| `/mcbs:capture` | View worker output |
+| `/mcbs:kill` | Kill one/all workers |
+| `/mcbs:status` | System overview |
+| `/mcbs:ticket` | Ticket management |
+| `/mcbs:done` | Signal task completion (workers) |
 
-### Exemple d'utilisation
+### Usage Example
 
 ```bash
-# Depuis n'importe quel terminal avec Claude Code
+# From any terminal with Claude Code
 claude
 
-# Dans Claude
-> /mcbs:status           # Voir l'état du système
-> /mcbs:spawn            # Créer un worker (interactif)
-> /mcbs:workers          # Lister les workers
-> /mcbs:capture worker-1 # Voir la sortie
+# In Claude
+> /mcbs:status           # View system status
+> /mcbs:spawn            # Create a worker (interactive)
+> /mcbs:workers          # List workers
+> /mcbs:capture worker-1 # View output
 ```
 
 ## Documentation
 
-- [Guide d'utilisation complet](docs/GUIDE.md)
+- [Complete Usage Guide](docs/GUIDE.md)
 - [claude-cli README](claude-cli/README.md)
 - [context-cli README](context-cli/README.md)
 - [tickets-cli README](tickets-cli/README.md)
 
-## Comment ce projet a été créé
+## How This Project Was Created
 
-Ce projet a été généré automatiquement à partir d'une vidéo Twitch de 6h grâce à un pipeline "Video-to-Code" :
+This project was automatically generated from a 6-hour Twitch video using a "Video-to-Code" pipeline:
 
 ```
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│  Vidéo Twitch   │────▶│ Extraction      │────▶│ Analyse frames  │
-│  (6h, no audio) │     │ frames (ffmpeg) │     │ (GPT-4 Vision)  │
+│  Twitch Video   │────▶│ Frame           │────▶│ Frame Analysis  │
+│  (6h, no audio) │     │ Extraction      │     │ (GPT-4 Vision)  │
+│                 │     │ (ffmpeg)        │     │                 │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
                                                         │
                                                         ▼
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│  Claude Code    │◀────│ BMAD Stories    │◀────│ Tutoriel MD     │
+│  Claude Code    │◀────│ BMAD Stories    │◀────│ Tutorial MD     │
 │  Implementation │     │ (User Stories)  │     │ (documentation) │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
-### Étapes
+### Steps
 
-1. **Téléchargement** : `yt-dlp` pour récupérer la vidéo Twitch
-2. **Extraction frames** : `ffmpeg -vf "fps=1/5"` → 4344 frames
-3. **Analyse vision** : Azure OpenAI GPT-4.1-mini analyse les frames
-4. **Génération tutoriel** : Documentation structurée en Markdown
-5. **BMAD Stories** : Conversion en User Stories avec le workflow BMAD
-6. **Implémentation** : Claude Code implémente chaque story
+1. **Download**: `yt-dlp` to fetch the Twitch video
+2. **Frame extraction**: `ffmpeg -vf "fps=1/5"` → 4344 frames
+3. **Vision analysis**: Azure OpenAI GPT-4.1-mini analyzes frames
+4. **Tutorial generation**: Structured Markdown documentation
+5. **BMAD Stories**: Conversion to User Stories with BMAD workflow
+6. **Implementation**: Claude Code implements each story
 
-### Résultat
+### Result
 
-Une vidéo de 6h transformée en système fonctionnel avec :
+A 6-hour video transformed into a functional system with:
 - 3 CLIs (claude-cli, context-cli, tickets-cli)
-- 8 skills Claude Code
-- Architecture multi-agents complète
+- 8 Claude Code skills
+- Complete multi-agent architecture
 
-## Crédits
+## Credits
 
-Basé sur le tutoriel Multi-Claude Bootstrap de [@claudecodeonly](https://www.twitch.tv/claudecodeonly).
+Based on the Multi-Claude Bootstrap tutorial by [@claudecodeonly](https://www.twitch.tv/claudecodeonly).
 
-Un grand merci pour cette vidéo Twitch de 6h qui présente un système d'orchestration multi-agents vraiment innovant. L'approche avec Prophet Claude, les workers tmux, et le système de tickets est élégante et puissante.
+A big thank you for this 6-hour Twitch video presenting a truly innovative multi-agent orchestration system. The approach with Prophet Claude, tmux workers, and the ticket system is elegant and powerful.
 
-Vidéo source : https://www.twitch.tv/claudecodeonly/video/2657952550
+Source video: https://www.twitch.tv/claudecodeonly/video/2657952550
 
-## Licence
+## License
 
 MIT

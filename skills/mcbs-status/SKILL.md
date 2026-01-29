@@ -6,62 +6,62 @@ allowed-tools: Bash
 
 # System Status
 
-Vue d'ensemble du système Multi-Claude Bootstrap.
+Overview of the Multi-Claude Bootstrap system.
 
-## Commandes à exécuter
+## Commands to Execute
 
-### 1. Status Prophet Claude
+### 1. Prophet Claude Status
 ```bash
 tmux has-session -t prophet-claude 2>/dev/null && echo "Prophet Claude: RUNNING" || echo "Prophet Claude: STOPPED"
 ```
 
-### 2. Workers actifs
+### 2. Active Workers
 ```bash
-/home/eric/projects/twich-test/claude list
+./claude list
 ```
 
-### 3. Tickets en cours
+### 3. In-Progress Tickets
 ```bash
-/home/eric/projects/twich-test/tickets list --status in-progress
-/home/eric/projects/twich-test/tickets list --status blocked
+./tickets list --status in-progress
+./tickets list --status blocked
 ```
 
-### 4. Statistiques tickets
+### 4. Ticket Statistics
 ```bash
-/home/eric/projects/twich-test/tickets stats
+./tickets stats
 ```
 
-### 5. Workers en attente de réponse
+### 5. Workers Waiting for Response
 ```bash
-echo "=== Workers en attente ==="
-ls /home/eric/projects/twich-test/signals/waiting/*.json 2>/dev/null || echo "Aucun worker en attente"
-```
-
-```bash
-# Détails des tickets waiting
-/home/eric/projects/twich-test/tickets list --status waiting
+echo "=== Workers waiting ==="
+ls ./signals/waiting/*.json 2>/dev/null || echo "No workers waiting"
 ```
 
 ```bash
-# Voir le détail des signals (si présents)
-for f in /home/eric/projects/twich-test/signals/waiting/*.json; do
+# Details of waiting tickets
+./tickets list --status waiting
+```
+
+```bash
+# View signal details (if present)
+for f in ./signals/waiting/*.json; do
   [ -f "$f" ] && echo "--- $(basename $f .json) ---" && cat "$f"
 done 2>/dev/null
 ```
 
-## Format de sortie
+## Output Format
 
 ```
 === Multi-Claude System Status ===
 
 Prophet Claude: [RUNNING/STOPPED]
 
-Workers actifs: X
+Active workers: X
   - worker-1 (running)
   - worker-2 (running)
 
-Workers en attente: X
-  ⏳ claude-auth: "OAuth ou JWT?" (ticket abc123)
+Workers waiting: X
+  ⏳ claude-auth: "OAuth or JWT?" (ticket abc123)
 
 Tickets:
   ○ Open: X
@@ -70,12 +70,12 @@ Tickets:
   ⏳ Waiting: X
   ✓ Done: X
 
-Sessions tmux: X total
+Tmux sessions: X total
 ```
 
-## Actions recommandées
+## Recommended Actions
 
 - Prophet STOPPED → `/prophet`
-- Tickets BLOCKED → Investiguer
-- Tickets WAITING → `/mcbs:respond <session> "réponse"`
-- Pas de workers mais tickets in-progress → Vérifier `/capture`
+- Tickets BLOCKED → Investigate
+- Tickets WAITING → `/mcbs:respond <session> "response"`
+- No workers but tickets in-progress → Check `/capture`

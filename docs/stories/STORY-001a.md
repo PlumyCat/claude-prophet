@@ -1,4 +1,4 @@
-# STORY-001a: Implémenter claude-cli
+# STORY-001a: Implement claude-cli
 
 **Epic:** Multi-Agent Orchestration
 **Priority:** Must Have
@@ -13,26 +13,26 @@
 
 ## User Story
 
-As a **développeur solo**
-I want to **spawner et gérer des workers Claude dans des sessions tmux**
-So that **je puisse déléguer des tâches à des agents isolés sans quitter ma session principale**
+As a **solo developer**
+I want to **spawn and manage Claude workers in tmux sessions**
+So that **I can delegate tasks to isolated agents without leaving my main session**
 
 ---
 
 ## Description
 
 ### Background
-Le claude-cli est le cœur du système Multi-Claude. Il permet de créer des workers Claude dans des sessions tmux isolées, de capturer leur sortie, et de les gérer (lister, tuer). C'est le MVP qui permet de valider le pattern de délégation.
+The claude-cli is the core of the Multi-Claude system. It allows creating Claude workers in isolated tmux sessions, capturing their output, and managing them (list, kill). This is the MVP that validates the delegation pattern.
 
-### Fonctionnalités
+### Features
 
-| Commande | Description |
-|----------|-------------|
-| `spawn` | Crée un worker Claude dans une nouvelle session tmux |
-| `capture` | Capture la sortie d'un worker |
-| `list` | Liste les workers actifs |
-| `kill` | Termine un worker spécifique |
-| `kill-all` | Termine tous les workers |
+| Command | Description |
+|---------|-------------|
+| `spawn` | Creates a Claude worker in a new tmux session |
+| `capture` | Captures a worker's output |
+| `list` | Lists active workers |
+| `kill` | Terminates a specific worker |
+| `kill-all` | Terminates all workers |
 
 ---
 
@@ -40,41 +40,41 @@ Le claude-cli est le cœur du système Multi-Claude. Il permet de créer des wor
 
 ### In Scope
 
-- CLI Python avec Click
-- Gestion de projet avec uv
-- Commandes : spawn, capture, list, kill, kill-all
-- Option `--name` pour nommer les sessions
-- Option `--role` pour appliquer un rôle (préparation context-cli)
-- Auto-exit des workers (envoi /exit)
-- README avec documentation
+- Python CLI with Click
+- Project management with uv
+- Commands: spawn, capture, list, kill, kill-all
+- `--name` option to name sessions
+- `--role` option to apply a role (preparation for context-cli)
+- Worker auto-exit (send /exit)
+- README with documentation
 
 ### Out of Scope
 
-- Intégration avec context-cli (STORY-001b)
-- Système de tickets (STORY-001c)
-- Rôles YAML (juste le flag --role préparé)
+- Integration with context-cli (STORY-001b)
+- Ticket system (STORY-001c)
+- YAML roles (just the --role flag prepared)
 
 ---
 
 ## User Flow
 
 ```
-1. Développeur veut déléguer une tâche
+1. Developer wants to delegate a task
    │
    ▼
-2. $ claude spawn --name auth-worker "Implémente l'auth JWT"
+2. $ claude spawn --name auth-worker "Implement JWT auth"
    │
-   ├─► Crée session tmux "auth-worker"
-   ├─► Lance claude en mode interactif
-   └─► Envoie le prompt via send-keys
+   ├─► Creates tmux session "auth-worker"
+   ├─► Launches claude in interactive mode
+   └─► Sends the prompt via send-keys
    │
    ▼
-3. Worker s'exécute de manière autonome
+3. Worker executes autonomously
    │
    ▼
 4. $ claude capture auth-worker --lines 50
    │
-   └─► Affiche les 50 dernières lignes de sortie
+   └─► Displays the last 50 lines of output
    │
    ▼
 5. $ claude list
@@ -82,7 +82,7 @@ Le claude-cli est le cœur du système Multi-Claude. Il permet de créer des wor
    └─► auth-worker (running, 5min)
    │
    ▼
-6. Worker termine avec /exit OU
+6. Worker terminates with /exit OR
    $ claude kill auth-worker
 ```
 
@@ -90,60 +90,60 @@ Le claude-cli est le cœur du système Multi-Claude. Il permet de créer des wor
 
 ## Acceptance Criteria
 
-### Commande spawn
+### spawn command
 
-- [ ] `claude spawn "prompt"` crée une session tmux avec nom auto-généré (claude-XXXXXXXX)
-- [ ] `claude spawn --name <name> "prompt"` crée une session avec le nom spécifié
-- [ ] `claude spawn --role <role> "prompt"` accepte un flag role (utilisé plus tard)
-- [ ] La session lance `claude` en mode interactif
-- [ ] Le prompt est envoyé via `tmux send-keys`
-- [ ] Un message confirme le spawn avec le nom de session
-- [ ] Instructions pour attacher : `tmux attach -t <name>`
+- [ ] `claude spawn "prompt"` creates a tmux session with auto-generated name (claude-XXXXXXXX)
+- [ ] `claude spawn --name <name> "prompt"` creates a session with the specified name
+- [ ] `claude spawn --role <role> "prompt"` accepts a role flag (used later)
+- [ ] The session launches `claude` in interactive mode
+- [ ] The prompt is sent via `tmux send-keys`
+- [ ] A message confirms the spawn with the session name
+- [ ] Instructions to attach: `tmux attach -t <name>`
 
-### Commande capture
+### capture command
 
-- [ ] `claude capture <session>` affiche les 30 dernières lignes par défaut
-- [ ] `claude capture <session> --lines N` affiche N lignes
-- [ ] Erreur claire si la session n'existe pas
-- [ ] Fonctionne pendant que le worker est actif
+- [ ] `claude capture <session>` displays the last 30 lines by default
+- [ ] `claude capture <session> --lines N` displays N lines
+- [ ] Clear error if session doesn't exist
+- [ ] Works while the worker is active
 
-### Commande list
+### list command
 
-- [ ] `claude list` affiche toutes les sessions claude-*
-- [ ] Format : nom, état (running), durée
-- [ ] Message "No active workers" si aucune session
+- [ ] `claude list` displays all claude-* sessions
+- [ ] Format: name, state (running), duration
+- [ ] "No active workers" message if no sessions
 
-### Commande kill
+### kill command
 
-- [ ] `claude kill <session>` termine la session spécifiée
-- [ ] Confirmation du kill
-- [ ] Erreur claire si session inexistante
+- [ ] `claude kill <session>` terminates the specified session
+- [ ] Confirmation of the kill
+- [ ] Clear error if session doesn't exist
 
-### Commande kill-all
+### kill-all command
 
-- [ ] `claude kill-all` termine toutes les sessions claude-*
-- [ ] Affiche le nombre de sessions tuées
-- [ ] Demande confirmation avant de tuer (--force pour skip)
+- [ ] `claude kill-all` terminates all claude-* sessions
+- [ ] Displays the number of sessions killed
+- [ ] Asks for confirmation before killing (--force to skip)
 
-### Général
+### General
 
-- [ ] Projet initialisé avec `uv init`
+- [ ] Project initialized with `uv init`
 - [ ] CLI accessible via `uv run python main.py <command>`
-- [ ] Wrapper script `claude` pour simplifier l'appel
-- [ ] README.md documentant toutes les commandes
+- [ ] Wrapper script `claude` to simplify the call
+- [ ] README.md documenting all commands
 
 ---
 
 ## Technical Notes
 
-### Structure du Projet
+### Project Structure
 
 ```
 bootstrap/claude-cli/
 ├── pyproject.toml
 ├── main.py
 ├── README.md
-└── claude              # Wrapper script (optionnel)
+└── claude              # Wrapper script (optional)
 ```
 
 ### pyproject.toml
@@ -274,22 +274,22 @@ if __name__ == "__main__":
     cli()
 ```
 
-### Commandes tmux Utilisées
+### tmux Commands Used
 
 ```bash
-# Créer session
+# Create session
 tmux new-session -d -s <name> "claude"
 
-# Envoyer texte
+# Send text
 tmux send-keys -t <name> "text" Enter
 
-# Capturer sortie
+# Capture output
 tmux capture-pane -t <name> -p
 
-# Lister sessions
+# List sessions
 tmux list-sessions -F "#{session_name} #{session_created}"
 
-# Tuer session
+# Kill session
 tmux kill-session -t <name>
 ```
 
@@ -297,45 +297,45 @@ tmux kill-session -t <name>
 
 ## Dependencies
 
-### Prérequis
+### Prerequisites
 
 - Python 3.11+
-- uv installé
-- tmux installé
-- Claude Code CLI configuré
+- uv installed
+- tmux installed
+- Claude Code CLI configured
 
-### Aucune dépendance sur d'autres stories
+### No dependencies on other stories
 
-Cette story est autonome et peut être implémentée en premier.
+This story is standalone and can be implemented first.
 
 ---
 
 ## Definition of Done
 
-- [ ] Projet créé avec `uv init`
-- [ ] Les 5 commandes fonctionnent (spawn, capture, list, kill, kill-all)
-- [ ] Tests manuels passés :
-  - [ ] Spawn un worker, vérifier qu'il apparaît dans tmux
-  - [ ] Capture la sortie pendant l'exécution
-  - [ ] List affiche le worker
-  - [ ] Kill termine le worker
-  - [ ] Kill-all termine plusieurs workers
-- [ ] README.md documenté
-- [ ] Code propre et commenté
+- [ ] Project created with `uv init`
+- [ ] All 5 commands work (spawn, capture, list, kill, kill-all)
+- [ ] Manual tests passed:
+  - [ ] Spawn a worker, verify it appears in tmux
+  - [ ] Capture output during execution
+  - [ ] List displays the worker
+  - [ ] Kill terminates the worker
+  - [ ] Kill-all terminates multiple workers
+- [ ] README.md documented
+- [ ] Clean and commented code
 
 ---
 
 ## Test Plan
 
-### Test 1: Spawn basique
+### Test 1: Basic spawn
 ```bash
 cd claude-cli
 uv run python main.py spawn "Say hello and exit with /exit"
-# Vérifier: session créée, message affiché
+# Verify: session created, message displayed
 tmux list-sessions | grep claude-
 ```
 
-### Test 2: Spawn nommé
+### Test 2: Named spawn
 ```bash
 uv run python main.py spawn --name test-worker "Echo TEST"
 tmux has-session -t test-worker && echo "OK"
@@ -344,13 +344,13 @@ tmux has-session -t test-worker && echo "OK"
 ### Test 3: Capture
 ```bash
 uv run python main.py capture test-worker --lines 20
-# Vérifier: sortie affichée
+# Verify: output displayed
 ```
 
 ### Test 4: List
 ```bash
 uv run python main.py list
-# Vérifier: test-worker listé
+# Verify: test-worker listed
 ```
 
 ### Test 5: Kill
@@ -365,7 +365,7 @@ uv run python main.py spawn "Test 1"
 uv run python main.py spawn "Test 2"
 uv run python main.py kill-all --force
 uv run python main.py list
-# Vérifier: "No active workers"
+# Verify: "No active workers"
 ```
 
 ---
@@ -373,8 +373,8 @@ uv run python main.py list
 ## Progress Tracking
 
 **Status History:**
-- 2025-01-28: Story créée
+- 2025-01-28: Story created
 
 ---
 
-**Prochaine story:** STORY-001b (context-cli) - Dépend de celle-ci pour le flag --role
+**Next story:** STORY-001b (context-cli) - Depends on this one for the --role flag
