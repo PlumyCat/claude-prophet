@@ -10,7 +10,7 @@ import click
 
 TICKETS_DIR = Path(__file__).parent / "tickets"
 
-VALID_STATUSES = ["open", "in-progress", "blocked", "done"]
+VALID_STATUSES = ["open", "in-progress", "blocked", "waiting", "done"]
 
 
 def ensure_tickets_dir():
@@ -64,6 +64,7 @@ def format_status_icon(status: str) -> str:
         "open": "○",
         "in-progress": "◐",
         "blocked": "✗",
+        "waiting": "⏳",
         "done": "✓",
     }
     return icons.get(status, "?")
@@ -335,7 +336,7 @@ def stats():
 
         tickets stats
     """
-    stats_data = {"open": 0, "in-progress": 0, "blocked": 0, "done": 0}
+    stats_data = {"open": 0, "in-progress": 0, "blocked": 0, "waiting": 0, "done": 0}
     total = 0
 
     for path in TICKETS_DIR.glob("*.json"):

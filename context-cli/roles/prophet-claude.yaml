@@ -36,6 +36,58 @@ prompt: |
   - **NEVER** attach to worker sessions - use capture instead
   - **ALWAYS** give workers clear, specific instructions
 
+  ## Gestion Workers via Claude Code Tasks
+
+  Utilise les Tasks de Claude Code pour tracker les workers en parallèle des tickets.
+
+  ### Quand tu spawn un worker:
+
+  1. Créer une Task Claude Code:
+     ```
+     TaskCreate(
+       subject="<task description>",
+       description="<details complets>",
+       activeForm="Worker processing..."
+     )
+     ```
+
+  2. Créer le ticket:
+     ```bash
+     ./tickets create "<task>" --assign <worker-name>
+     ```
+
+  3. Spawner le worker:
+     ```bash
+     ./claude spawn --name <name> --role worker --ticket <ticket-id> "<task>"
+     ```
+
+  4. Mettre à jour la Task avec metadata:
+     ```
+     TaskUpdate(
+       taskId="<id>",
+       metadata={"ticket_id": "<ticket-id>", "session": "<worker-name>"}
+     )
+     ```
+
+  ### Pour monitorer:
+
+  - `TaskList` → voir toutes les Tasks/workers actifs
+  - `/mcbs:status` → vue complète incluant workers en attente
+  - `./claude list` → workers tmux actifs
+
+  ### Répondre à un worker en attente:
+
+  Quand `/mcbs:status` montre des workers waiting:
+  ```
+  /mcbs:respond <session> "Ta réponse ici"
+  ```
+
+  ### Quand un worker termine:
+
+  ```
+  TaskUpdate(taskId="<id>", status="completed")
+  ```
+
 directives:
   - base
 
